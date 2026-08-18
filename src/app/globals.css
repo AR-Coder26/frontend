@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  "Maroon & Ivory" design tokens.
+  Every color is an HSL triplet with no `hsl()` wrapper, so Tailwind can compose opacity
+  modifiers like `bg-primary/10` on top of them. Hex equivalents are noted in comments —
+  they're what was actually chosen in the design proposal; the HSL values are the
+  build-accurate source Tailwind reads from.
+*/
+@layer base {
+  :root {
+    --background: 36 45% 96%;         /* #FAF6F0 warm ivory */
+    --foreground: 20 20% 13%;         /* #2A1F1A near-black warm text */
+
+    --card: 0 0% 100%;                /* #FFFFFF product cards, panels, modals */
+    --card-foreground: 20 20% 13%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 20% 13%;
+
+    --primary: 351 58% 31%;           /* #7A1F2B deep maroon — primary CTA, links, active nav */
+    --primary-hover: 351 60% 23%;     /* #5C1620 */
+    --primary-foreground: 30 45% 97%; /* #FDF8F3 text/icons on maroon */
+
+    --secondary: 36 38% 92%;          /* #F3ECE1 secondary buttons, alt section backgrounds */
+    --secondary-foreground: 20 20% 13%;
+
+    --muted: 36 38% 92%;
+    --muted-foreground: 21 13% 36%;   /* #6B5D52 captions, helper text, disabled states */
+
+    --accent: 38 52% 50%;             /* #C0973E antique gold — badges, dividers, focus ring */
+    --accent-hover: 38 55% 41%;       /* #A67D2E */
+    --accent-foreground: 20 20% 13%;
+
+    --destructive: 7 60% 44%;         /* #B33A2E errors, out-of-stock, Cancelled status */
+    --destructive-foreground: 30 45% 97%;
+
+    --success: 140 26% 33%;           /* #3F6B4A Confirmed / Delivered order states */
+    --success-foreground: 30 45% 97%;
+
+    --warning: 38 73% 40%;            /* #B8791E Pending / awaiting-confirmation order states */
+    --warning-foreground: 30 45% 97%;
+
+    --border: 32 33% 87%;             /* #E7DDD0 hairline rules, card borders */
+    --input: 32 33% 87%;
+    --ring: 38 52% 50%;               /* gold focus ring — matches accent, stays visible on ivory */
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display;
+  }
+
+  /* Visible keyboard focus everywhere. Do not remove this for a "cleaner" look — it's a
+     quality-floor requirement, not decoration. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+/* Skeleton loader shimmer — used while product/variant/order data is fetching (design
+   mandate explicitly calls for skeleton loaders, not spinners, on the storefront). */
+@layer utilities {
+  .skeleton {
+    @apply relative overflow-hidden bg-secondary;
+  }
+  .skeleton::after {
+    content: '';
+    /* @apply (not raw `animation:`) is deliberate — it's what makes Tailwind's JIT compiler
+       actually detect and emit the `shimmer` @keyframes block. Referencing the animation
+       name directly in a hand-written selector like this one, with no `animate-shimmer`
+       class ever appearing in markup, would get tree-shaken away with nothing at runtime. */
+    @apply absolute inset-0 -translate-x-full animate-shimmer;
+    background-image: linear-gradient(90deg, transparent, hsl(var(--card) / 0.6), transparent);
+  }
+}
+
+/* Respect reduced-motion preference site-wide, per the design mandate. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

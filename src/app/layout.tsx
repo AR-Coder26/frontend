@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Fraunces, Manrope } from 'next/font/google';
+import { MotionConfig } from 'framer-motion';
 import { Toaster } from 'sonner';
 import './globals.css';
 
@@ -41,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${manrope.variable}`}>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
-        {children}
+        <MotionConfig reducedMotion="user">{children}</MotionConfig>
         <Toaster richColors closeButton position="top-center" />
       </body>
     </html>

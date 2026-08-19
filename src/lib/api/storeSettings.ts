@@ -18,7 +18,6 @@ export function getAdminStoreSettings() {
 }
 
 export interface UpdateStoreSettingsPayload {
-    [key: string]: unknown;
   jazzCash?: Partial<{ accountTitle: string; accountNumber: string; instructions: string; isActive: boolean }>;
   easyPaisa?: Partial<{ accountTitle: string; accountNumber: string; instructions: string; isActive: boolean }>;
   bankTransfer?: Partial<{
@@ -43,6 +42,6 @@ export interface UpdateStoreSettingsPayload {
 export function updateStoreSettings(payload: UpdateStoreSettingsPayload) {
   return adminRequest<StoreSettingsAdmin>('/admin/store-settings', {
     method: 'PATCH',
-    body: payload as Record<string, unknown>,
+    body: payload,
   });
 }

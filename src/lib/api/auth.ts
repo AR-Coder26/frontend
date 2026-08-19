@@ -4,7 +4,6 @@ import type { AdminUser, Customer, CustomerAuthSummary } from '@/types';
 // ---------- Customer ----------
 
 export interface RegisterPayload {
-  [key: string]: unknown;
   name: string;
   email?: string;
   phone?: string;
@@ -14,24 +13,17 @@ export interface RegisterPayload {
 /** At least one of email/phone is required — enforced server-side by auth.validator.js,
  *  so the frontend form must validate the same "at least one" rule before submitting. */
 export function registerCustomer(payload: RegisterPayload) {
-  return request<CustomerAuthSummary>('/auth/register', {
-    method: 'POST',
-    body: payload as Record<string, unknown>,
-  });
+  return request<CustomerAuthSummary>('/auth/register', { method: 'POST', body: payload });
 }
 
 export interface LoginPayload {
-  [key: string]: unknown;
   /** Email OR phone — the backend looks this up via Customer.findByIdentifier(). */
   identifier: string;
   password: string;
 }
 
 export function loginCustomer(payload: LoginPayload) {
-  return request<CustomerAuthSummary>('/auth/login', {
-    method: 'POST',
-    body: payload as Record<string, unknown>,
-  });
+  return request<CustomerAuthSummary>('/auth/login', { method: 'POST', body: payload });
 }
 
 export function logoutCustomer() {
@@ -46,16 +38,12 @@ export function getCurrentCustomer() {
 // ---------- Admin ----------
 
 export interface AdminLoginPayload {
-  [key: string]: unknown;
   email: string;
   password: string;
 }
 
 export function loginAdmin(payload: AdminLoginPayload) {
-  return request<AdminUser>('/admin/auth/login', {
-    method: 'POST',
-    body: payload as Record<string, unknown>,
-  });
+  return request<AdminUser>('/admin/auth/login', { method: 'POST', body: payload });
 }
 
 export function logoutAdmin() {
@@ -67,7 +55,6 @@ export function getCurrentAdmin() {
 }
 
 export interface ChangeAdminPasswordPayload {
-  [key: string]: unknown;
   currentPassword: string;
   newPassword: string;
 }
@@ -75,8 +62,5 @@ export interface ChangeAdminPasswordPayload {
 /** Clears the admin's session cookies on success — the caller must redirect to
  *  /admin/login afterwards, the server does not do this for you. */
 export function changeAdminPassword(payload: ChangeAdminPasswordPayload) {
-  return adminRequest<null>('/admin/auth/change-password', {
-    method: 'PATCH',
-    body: payload as Record<string, unknown>,
-  });
+  return adminRequest<null>('/admin/auth/change-password', { method: 'PATCH', body: payload });
 }

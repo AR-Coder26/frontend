@@ -23,8 +23,7 @@ export class ApiError extends Error {
 }
 
 interface RequestOptions extends Omit<RequestInit, 'body'> {
-  /** FormData for multipart uploads, or a plain object that gets JSON.stringify'd for you. */
-  body?: BodyInit | Record<string, unknown>;
+  body?: BodyInit | object;
   /** Internal — set by adminRequest/customerRequest. Never pass this yourself. */
   refreshPath?: string;
   /** Internal — prevents infinite refresh loops. Never pass this yourself. */
@@ -84,8 +83,10 @@ export function customerRequest<T>(path: string, options: RequestOptions = {}) {
   return request<T>(path, { ...options, refreshPath: CUSTOMER_REFRESH_PATH });
 }
 
-/** `{a: 1, b: undefined, c: ''}` -> `'?a=1'`. Shared by every list endpoint's query params. */
-export function buildQueryString(params: Record<string, unknown>): string {
+/** `{a: 1, b: undefined, c: ''}` -> `'?a=1'`. Shared by every list endpoint's query params.
+ *  Same `object` reasoning as RequestOptions.body above ProductListParams etc. need to be
+ *  assignable here without an index signature. */
+export function buildQueryString(params: object): string {
   const usp = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== '') usp.set(key, String(value));

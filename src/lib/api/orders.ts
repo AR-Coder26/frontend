@@ -4,7 +4,6 @@ import type { Order, OrderStatus, Paginated, PaymentMethod } from '@/types';
 // ---------- Guest / optional-auth ----------
 
 export interface PlaceOrderPayload {
-  [key: string]: unknown;
   customer: { name: string; phone: string; whatsappNumber?: string; email?: string };
   /** Send EITHER addressId (logged-in customer, saved address) OR shippingAddress (guest,
    *  or a one-off address) — never both. */
@@ -21,10 +20,7 @@ export interface PlaceOrderPayload {
  * not `customerRequest()`. Rate-limited to 10/hour per IP server-side.
  */
 export function placeOrder(payload: PlaceOrderPayload) {
-  return request<Order>('/orders', {
-    method: 'POST',
-    body: payload as Record<string, unknown>,
-  });
+  return request<Order>('/orders', { method: 'POST', body: payload });
 }
 
 /** Rate-limited to 10/15min per IP server-side. */
@@ -63,7 +59,6 @@ export function cancelMyOrder(id: string, cancelReason?: string) {
 // ---------- Admin ----------
 
 export interface AdminOrderListParams {
-  [key: string]: unknown;
   status?: OrderStatus;
   search?: string;
   page?: number;
@@ -71,9 +66,7 @@ export interface AdminOrderListParams {
 }
 
 export function getAdminOrders(params: AdminOrderListParams = {}) {
-  return adminRequest<Paginated<'orders', Order>>(
-    `/admin/orders${buildQueryString(params as Record<string, unknown>)}`
-  );
+  return adminRequest<Paginated<'orders', Order>>(`/admin/orders${buildQueryString(params)}`);
 }
 
 /** Powers the admin nav's unseen-orders badge. */
@@ -94,7 +87,6 @@ export function markOrderSeen(id: string) {
 }
 
 export interface UpdateOrderStatusPayload {
-  [key: string]: unknown;
   orderStatus?: OrderStatus;
   adminNotes?: string;
   cancelReason?: string;
@@ -106,10 +98,7 @@ export interface UpdateOrderStatusPayload {
  * below must succeed first in that case.
  */
 export function updateOrderStatus(id: string, payload: UpdateOrderStatusPayload) {
-  return adminRequest<Order>(`/admin/orders/${id}/status`, {
-    method: 'PATCH',
-    body: payload as Record<string, unknown>,
-  });
+  return adminRequest<Order>(`/admin/orders/${id}/status`, { method: 'PATCH', body: payload });
 }
 
 /** multipart/form-data — file field "screenshot" (singular, NOT "images"). OCR-verifies the

@@ -19,6 +19,7 @@ export function HeaderNav({ categories }: HeaderNavProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const hasMounted = useHasMounted();
   const cartCount = useCartStore((state) => state.getTotalItems());
+  const openCartDrawer = useCartStore((state) => state.openDrawer);
   const wishlistCount = useWishlistStore((state) => state.items.length);
 
   const navLinks = [
@@ -71,18 +72,22 @@ export function HeaderNav({ categories }: HeaderNavProps) {
             </Link>
           </Button>
 
-          <Button variant="ghost" size="icon" asChild className="relative">
-            <Link href="/cart" aria-label="Cart">
-              <ShoppingBag className="h-5 w-5" />
-              {hasMounted && cartCount > 0 && (
-                <Badge
-                  variant="accent"
-                  className="absolute -right-1 -top-1 h-4 min-w-4 justify-center rounded-full p-0 text-[10px] leading-4"
-                >
-                  {cartCount}
-                </Badge>
-              )}
-            </Link>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative"
+            onClick={openCartDrawer}
+            aria-label="Cart"
+          >
+            <ShoppingBag className="h-5 w-5" />
+            {hasMounted && cartCount > 0 && (
+              <Badge
+                variant="accent"
+                className="absolute -right-1 -top-1 h-4 min-w-4 justify-center rounded-full p-0 text-[10px] leading-4"
+              >
+                {cartCount}
+              </Badge>
+            )}
           </Button>
 
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>

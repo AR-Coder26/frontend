@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { Heart, Minus, Plus } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useCartStore } from '@/store/cartStore';
@@ -10,6 +10,7 @@ import { useWishlistStore } from '@/store/wishlistStore';
 import { useHasMounted } from '@/hooks/useHasMounted';
 import { formatPKR } from '@/lib/utils';
 import { StickyAddToCartBar } from './StickyAddToCartBar';
+import { QuantityStepper } from './QuantityStepper';
 import { ProductSpecs } from './ProductSpecs';
 import { CustomStitchingNote } from './CustomStitchingNote';
 import type { VariantSelection } from '@/hooks/useVariantSelection';
@@ -30,6 +31,14 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
 
   const { selectedVariant } = selection;
   const isOutOfStock = !selectedVariant || selectedVariant.stock === 0;
+
+  // Switching color/size/stitching can resolve to a DIFFERENT variant with less stock than
+  // whatever quantity was previously dialed in — reset to 1 rather than silently leaving
+  // quantity above the new variant's stock until the customer happens to touch the stepper.
+  useEffect(() => {
+    setQuantity(1);
+  }, [selectedVariant?._id]);
+
 
   function handleAddToCart() {
     if (!selectedVariant || selectedVariant.stock === 0) return;
@@ -207,27 +216,11 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
       {/* Desktop quantity + add to cart — hidden on mobile, StickyAddToCartBar covers that
           breakpoint instead. */}
       <div className="mt-6 hidden items-center gap-3 md:flex">
-        <div className="flex items-center rounded-md border border-input">
-          <button
-            type="button"
-            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            disabled={quantity <= 1}
-            aria-label="Decrease quantity"
-            className="flex h-10 w-10 items-center justify-center text-foreground disabled:opacity-30"
-          >
-            <Minus className="h-4 w-4" />
-          </button>
-          <span className="w-8 text-center text-sm">{quantity}</span>
-          <button
-            type="button"
-            onClick={() => setQuantity((q) => Math.min(selectedVariant?.stock ?? 1, q + 1))}
-            disabled={!selectedVariant || quantity >= selectedVariant.stock}
-            aria-label="Increase quantity"
-            className="flex h-10 w-10 items-center justify-center text-foreground disabled:opacity-30"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-        </div>
+        <QuantityStepper
+          value={quantity}
+          max={selectedVariant?.stock ?? 1}
+          onChange={setQuantity}
+        />
 
         <Button size="lg" className="flex-1" disabled={isOutOfStock} onClick={handleAddToCart}>
           {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}

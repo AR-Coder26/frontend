@@ -7,3 +7,11 @@ import { twMerge } from 'tailwind-merge';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+/** Formats a number as Pakistani Rupees — e.g. formatPKR(2500) -> "Rs. 2,500". Uses Western
+ *  (en-US) thousands grouping rather than the lakh/crore grouping some PK sites use above
+ *  Rs. 100,000 — fine for per-item clothing prices; revisit if order totals routinely cross
+ *  six figures. */
+export function formatPKR(amount: number): string {
+  return `Rs. ${amount.toLocaleString('en-US')}`;
+}

@@ -3,6 +3,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { WhatsAppFAB } from './WhatsAppFAB';
 import { CartDrawer } from '@/components/cart/CartDrawer';
+import { CustomerAuthInitializer } from './CustomerAuthInitializer';
 
 /**
  * The customer-facing chrome — used by (shop) and (account), and ONLY those. (admin) is a
@@ -17,6 +18,7 @@ export function StorefrontShell({ children }: { children: ReactNode }) {
       <Footer />
       <WhatsAppFAB />
       <CartDrawer />
+      <CustomerAuthInitializer />
     </div>
   );
 }

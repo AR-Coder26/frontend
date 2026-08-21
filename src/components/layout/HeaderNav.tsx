@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Heart, Menu, ShoppingBag, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -10,6 +9,8 @@ import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useHasMounted } from '@/hooks/useHasMounted';
 import type { Category } from '@/types';
+import { AccountMenu } from './AccountMenu';
+import { Heart, Menu, ShoppingBag } from 'lucide-react';
 
 interface HeaderNavProps {
   categories: Category[];
@@ -31,7 +32,7 @@ export function HeaderNav({ categories }: HeaderNavProps) {
     <div className="border-b border-border bg-background">
       <div className="container flex h-16 items-center justify-between gap-4">
         {/* TODO(client): swap for the real store wordmark/logo once confirmed. */}
-        <Link href="/" className="font-display text-xl font-semibold tracking-tight text-foreground">
+        <Link href="public\Assets\logo\Brand-logo.svg" className="font-display text-xl font-semibold tracking-tight text-foreground">
           Atelier
         </Link>
 
@@ -52,11 +53,7 @@ export function HeaderNav({ categories }: HeaderNavProps) {
         </nav>
 
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" asChild className="hidden sm:inline-flex">
-            <Link href="/track-order" aria-label="Track order">
-              <User className="h-5 w-5" />
-            </Link>
-          </Button>
+          <AccountMenu />
 
           <Button variant="ghost" size="icon" asChild className="relative">
             <Link href="/wishlist" aria-label="Wishlist">

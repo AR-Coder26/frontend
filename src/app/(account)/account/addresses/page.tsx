@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { getMyAddresses, deleteMyAddress } from '@/lib/api/addresses';
 import { AddressCard } from '@/components/account/AddressCard';
-import { AddressFormDialog } from '@/components/account/AddressFormDialo';
+import { AddressFormDialog } from '@/components/account/AddressFormDialog';
 import { Button } from '@/components/ui/button';
 import { ApiError } from '@/lib/api/client';
 import type { Address } from '@/types';

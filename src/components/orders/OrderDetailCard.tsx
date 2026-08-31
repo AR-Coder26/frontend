@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { OrderStatusBadge } from './OrderStatusBadg';
+import { OrderStatusBadge } from './OrderStatusBadge';
 import { formatPKR } from '@/lib/utils';
 import { ApiError } from '@/lib/api/client';
 import type { Order } from '@/types';

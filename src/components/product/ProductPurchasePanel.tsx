@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,8 +25,10 @@ interface ProductPurchasePanelProps {
 export function ProductPurchasePanel({ product, selection }: ProductPurchasePanelProps) {
   const [quantity, setQuantity] = useState(1);
   const hasMounted = useHasMounted();
+  const router = useRouter();
 
   const addItem = useCartStore((state) => state.addItem);
+  const closeDrawer = useCartStore((state) => state.closeDrawer);
   const isWishlisted = useWishlistStore((state) => state.isWishlisted(product._id));
   const toggleWishlist = useWishlistStore((state) => state.toggleItem);
 
@@ -39,9 +42,14 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
     setQuantity(1);
   }, [selectedVariant?._id]);
 
-
-  function handleAddToCart() {
-    if (!selectedVariant || selectedVariant.stock === 0) return;
+  // Shared by both buttons — "Buy Now" adds to cart exactly like "Add to Cart" does, it just
+  // ALSO navigates straight to /checkout afterward instead of stopping at the cart drawer.
+  // This means Buy Now checks out the WHOLE cart (this item plus anything already in it),
+  // not just this one item in isolation — the simpler, far more common interpretation (Daraz,
+  // most local stores) and it reuses the existing checkout flow exactly as built, rather than
+  // needing a second "single-item checkout" code path.
+  function addSelectedVariantToCart() {
+    if (!selectedVariant || selectedVariant.stock === 0) return false;
 
     addItem(
       {
@@ -59,11 +67,24 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
       },
       quantity
     );
+    return true;
+  }
 
+  function handleAddToCart() {
+    if (!addSelectedVariantToCart()) return;
     toast.success('Added to cart', {
-      description: `${product.name} — ${selectedVariant.color}, ${selectedVariant.size}`,
+      description: `${product.name} — ${selectedVariant!.color}, ${selectedVariant!.size}`,
     });
     setQuantity(1);
+  }
+
+  function handleBuyNow() {
+    if (!addSelectedVariantToCart()) return;
+    // addItem() always sets isDrawerOpen: true (see cartStore.ts) — closing it immediately
+    // avoids a pointless flash of the drawer opening a split second before navigating away.
+    closeDrawer();
+    setQuantity(1);
+    router.push('/checkout');
   }
 
   function handleWishlistToggle() {
@@ -78,7 +99,11 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
 
   return (
     <div className="pb-24 md:pb-0">
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">{product.brand.name}</p>
+      {product.brand && (
+        <p className="text-xs uppercase tracking-wide text-muted-foreground">
+          {product.brand.name}
+        </p>
+      )}
       <h1 className="mt-1 font-display text-2xl text-foreground sm:text-3xl">{product.name}</h1>
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -213,8 +238,8 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
         )}
       </div>
 
-      {/* Desktop quantity + add to cart — hidden on mobile, StickyAddToCartBar covers that
-          breakpoint instead. */}
+      {/* Desktop quantity + add to cart / buy now — hidden on mobile, StickyAddToCartBar
+          covers that breakpoint instead. */}
       <div className="mt-6 hidden items-center gap-3 md:flex">
         <QuantityStepper
           value={quantity}
@@ -222,8 +247,18 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
           onChange={setQuantity}
         />
 
-        <Button size="lg" className="flex-1" disabled={isOutOfStock} onClick={handleAddToCart}>
+        <Button
+          size="lg"
+          variant="outline"
+          className="flex-1"
+          disabled={isOutOfStock}
+          onClick={handleAddToCart}
+        >
           {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+        </Button>
+
+        <Button size="lg" className="flex-1" disabled={isOutOfStock} onClick={handleBuyNow}>
+          Buy Now
         </Button>
 
         <button
@@ -247,8 +282,9 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
       <StickyAddToCartBar
         price={selectedVariant?.price ?? null}
         disabled={isOutOfStock}
-        label={isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+        addToCartLabel={isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
         onAddToCart={handleAddToCart}
+        onBuyNow={handleBuyNow}
       />
     </div>
   );

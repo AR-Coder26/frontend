@@ -19,7 +19,7 @@ export function CategoryTiles({ categories }: CategoryTilesProps) {
             href={`/category/${category.slug}`}
             className="group relative flex aspect-square items-end overflow-hidden rounded-md bg-secondary"
           >
-            {category.image ? (
+            {category.image?.url ? (
               <Image
                 src={category.image.url}
                 alt={category.name}

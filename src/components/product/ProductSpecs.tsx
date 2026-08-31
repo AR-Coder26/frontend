@@ -21,7 +21,7 @@ export function ProductSpecs({ product }: ProductSpecsProps) {
       value: PIECE_COUNT_LABEL[product.pieceCount] ?? `${product.pieceCount}-Piece`,
     },
     { label: 'Category', value: product.category.name },
-    { label: 'Brand', value: product.brand.name },
+    ...(product.brand ? [{ label: 'Brand', value: product.brand.name }] : []),
   ];
 
   return (

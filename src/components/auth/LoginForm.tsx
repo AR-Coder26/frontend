@@ -6,11 +6,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { loginCustomer, getCurrentCustomer } from '@/lib/api/auth';
 import { ApiError } from '@/lib/api/client';
 import { useCustomerAuthStore } from '@/store/customerAuthStore';
 import { loginSchema, type LoginFormValues } from '@/lib/validators/customerAuth';
+import { buildStoreWhatsAppLink } from '@/lib/whatsapp';
 
 interface LoginFormProps {
   redirectTo: string;
@@ -20,6 +22,17 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
   const router = useRouter();
   const setCustomer = useCustomerAuthStore((state) => state.setCustomer);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  // There is no password-reset endpoint anywhere on the backend (checked every auth route/
+  // controller — no forgot/reset logic exists at all, deliberately or not). Rather than link
+  // to a page that doesn't exist, this reuses the store's own WhatsApp support channel —
+  // already the primary support channel for orders/returns throughout this project — with a
+  // pre-filled message. Returns null (and the link simply isn't rendered) if the store's
+  // WhatsApp number isn't configured, same rule every other caller of this helper follows.
+  const forgotPasswordLink = buildStoreWhatsAppLink(
+    "Hi! I forgot my account password and need help logging in."
+  );
 
   const {
     register,
@@ -64,15 +77,38 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
       </div>
 
       <div>
-        <label htmlFor="password" className="text-xs font-medium text-muted-foreground">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          {...register('password')}
-          className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        />
+        <div className="flex items-center justify-between">
+          <label htmlFor="password" className="text-xs font-medium text-muted-foreground">
+            Password
+          </label>
+          {forgotPasswordLink && (
+            <a
+              href={forgotPasswordLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-medium text-primary hover:text-primary-hover"
+            >
+              Forgot password?
+            </a>
+          )}
+        </div>
+        <div className="relative mt-1">
+          <input
+            id="password"
+            type={showPassword ? 'text' : 'password'}
+            {...register('password')}
+            className="w-full rounded-md border border-input bg-card px-3 py-2 pr-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            tabIndex={-1}
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
         {errors.password && (
           <p className="mt-1 text-xs text-destructive">{errors.password.message}</p>
         )}

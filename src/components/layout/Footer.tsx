@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { getCategories } from '@/lib/api/categories';
 import { getPublicStoreSettings } from '@/lib/api/storeSettings';
 import { buildStoreWhatsAppLink } from '@/lib/whatsapp';
@@ -29,8 +30,8 @@ export async function Footer() {
     <footer className="border-t border-border bg-secondary">
       <div className="container grid gap-10 py-12 md:grid-cols-4">
         <div>
-          {/* TODO(client): swap for the real store wordmark/logo once confirmed. */}
-          <p className="font-display text-lg font-semibold text-foreground">Atelier</p>
+          {/* Same logo asset as HeaderNav.tsx — public/Assets/logo/Brand-logo.svg. */}
+          <Image src="/Assets/logo/Brand-logo.svg" alt="Brandox" width={120} height={28} className="h-12 w-auto" />
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">
             Stitched &amp; unstitched suits in Lawn, Cotton, Khaddar, Chiffon and Silk.
           </p>
@@ -111,9 +112,18 @@ export async function Footer() {
 
       <div className="border-t border-border">
         <div className="container flex flex-col items-center justify-between gap-2 py-4 text-xs text-muted-foreground sm:flex-row">
-          {/* TODO(client): real store name here too, once confirmed. */}
-          <p>© {new Date().getFullYear()} Women&rsquo;s Clothing Store. All rights reserved.</p>
-          <p>Order updates are sent via WhatsApp, not courier tracking.</p>
+          {/* Real store name — was a placeholder "Women's Clothing Store" before. */}
+          <p>© {new Date().getFullYear()} Brandox. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <p>Order updates are sent via WhatsApp, not courier tracking.</p>
+            {/* Deliberately tiny and low-contrast, not a nav item — most storefronts don't
+                surface their admin panel prominently in the public UI at all (it's normally
+                just bookmarked directly). This is a compromise: SOME discoverable path exists
+                without putting "Admin" next to Cart/Wishlist where every visitor sees it. */}
+            <Link href="/admin/login" className="text-muted-foreground/50 hover:text-muted-foreground">
+              Admin
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

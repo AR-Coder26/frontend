@@ -72,9 +72,11 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         <div className="mt-3 space-y-0.5">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">
-            {product.brand.name}
-          </p>
+          {product.brand && (
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              {product.brand.name}
+            </p>
+          )}
           <h3 className="line-clamp-1 text-sm text-foreground">{product.name}</h3>
           <p className="font-display text-sm text-foreground">{priceLabel}</p>
         </div>

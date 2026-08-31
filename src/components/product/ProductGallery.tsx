@@ -21,7 +21,13 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
   const [zoomOrigin, setZoomOrigin] = useState('center');
   const [isZooming, setIsZooming] = useState(false);
 
-  const activeImage = images[activeIndex];
+  // The backend can return an ImageAsset object that EXISTS but has an empty-string `url`
+  // (not just a missing/null image) — next/image throws "An empty string was passed to the
+  // src attribute" if that ever reaches it un-filtered. Filtering once here, at the
+  // boundary, covers both the main image and every thumbnail below in one place, rather
+  // than needing a separate guard at each render site.
+  const validImages = images.filter((image) => image.url);
+  const activeImage = validImages[activeIndex];
 
   function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -56,9 +62,9 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
         />
       </div>
 
-      {images.length > 1 && (
+      {validImages.length > 1 && (
         <div className="mt-3 flex gap-2 overflow-x-auto">
-          {images.map((image, index) => (
+          {validImages.map((image, index) => (
             <button
               key={image.publicId}
               type="button"

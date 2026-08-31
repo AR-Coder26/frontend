@@ -26,14 +26,12 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  // TODO(client): this is placeholder SITE METADATA only (not product data — no mock-data
-  // rule violation here), and needs the real store name/domain before launch.
   title: {
-    default: 'Women\u2019s Clothing Store | Pakistan',
-    template: '%s | Women\u2019s Clothing Store',
+    default: 'Brandox | Women\u2019s Clothing in Pakistan',
+    template: '%s | Brandox',
   },
   description:
-    'Stitched & unstitched suits in Lawn, Cotton, Khaddar, Chiffon and Silk — 1, 2 & 3-piece. Cash on Delivery, JazzCash and EasyPaisa accepted.',
+    'Brandox — stitched & unstitched suits in Lawn, Cotton, Khaddar, Chiffon and Silk — 1, 2 & 3-piece. Cash on Delivery, JazzCash, EasyPaisa and Bank Transfer accepted.',
 };
 
 export default function RootLayout({

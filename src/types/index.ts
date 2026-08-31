@@ -84,7 +84,14 @@ export interface Product {
   slug: string;
   description: string;
   category: ProductRelationRef;
-  brand: ProductRelationRef;
+  // Nullable despite the backend's `required: true` on this field that only validates at
+  // WRITE time. If a product's brand reference is ever dangling (e.g. seed data inserted
+  // directly into MongoDB bypassing Mongoose validation, or in principle a brand deleted
+  // by some path other than the guarded DELETE /admin/brands/:id endpoint), Mongoose's
+  // .populate('brand') resolves it to null at READ time instead of erroring. Typed this way
+  // deliberately so TypeScript forces every display site to handle it, rather than trusting
+  // the schema's "required" as a runtime guarantee it doesn't actually provide.
+  brand: ProductRelationRef | null;
   fabricType: FabricType;
   pieceCount: PieceCount;
   isCustomStitchingAvailable: boolean;
@@ -178,6 +185,7 @@ export interface Order {
   pricing: OrderPricing;
   isFreeDelivery: boolean;
   paymentMethod: PaymentMethod;
+  // Schema exists but there is no upload endpoint for it yet (see manifest) — always null today.
   paymentProof: ImageAsset | null;
   orderStatus: OrderStatus;
   cancelReason: string | null;

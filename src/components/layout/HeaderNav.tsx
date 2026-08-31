@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -31,9 +32,18 @@ export function HeaderNav({ categories }: HeaderNavProps) {
   return (
     <div className="border-b border-border bg-background">
       <div className="container flex h-16 items-center justify-between gap-4">
-        {/* TODO(client): swap for the real store wordmark/logo once confirmed. */}
-        <Link href="public\Assets\logo\Brand-logo.svg" className="font-display text-xl font-semibold tracking-tight text-foreground">
-          Atelier
+        {/* Real logo — file lives at public/Assets/logo/Brand-logo.svg. Height fixed at 32px,
+            width auto so the SVG's natural aspect ratio is preserved regardless of how wide
+            the actual wordmark/mark combination turns out to be. */}
+        <Link href="/" className="flex items-center" aria-label="Brandox — home">
+          <Image
+            src="/Assets/logo/Brand-logo.svg"
+            alt="Brandox"
+            width={140}
+            height={32}
+            priority
+            className="h-12 w-auto"
+          />
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">

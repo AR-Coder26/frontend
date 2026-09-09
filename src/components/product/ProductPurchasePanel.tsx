@@ -29,6 +29,7 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
 
   const addItem = useCartStore((state) => state.addItem);
   const closeDrawer = useCartStore((state) => state.closeDrawer);
+  const selectOnly = useCartStore((state) => state.selectOnly);
   const isWishlisted = useWishlistStore((state) => state.isWishlisted(product._id));
   const toggleWishlist = useWishlistStore((state) => state.toggleItem);
 
@@ -79,9 +80,8 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
   }
 
   function handleBuyNow() {
-    if (!addSelectedVariantToCart()) return;
-    // addItem() always sets isDrawerOpen: true (see cartStore.ts) — closing it immediately
-    // avoids a pointless flash of the drawer opening a split second before navigating away.
+    if (!addSelectedVariantToCart() || !selectedVariant) return;
+    selectOnly(selectedVariant._id);
     closeDrawer();
     setQuantity(1);
     router.push('/checkout');

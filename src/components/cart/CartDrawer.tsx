@@ -22,12 +22,16 @@ export function CartDrawer() {
   const isDrawerOpen = useCartStore((state) => state.isDrawerOpen);
   const closeDrawer = useCartStore((state) => state.closeDrawer);
   const openDrawer = useCartStore((state) => state.openDrawer);
-  const getSubtotal = useCartStore((state) => state.getSubtotal);
+  const getSelectedSubtotal = useCartStore((state) => state.getSelectedSubtotal);
+  const selectAll = useCartStore((state) => state.selectAll);
+  const deselectAll = useCartStore((state) => state.deselectAll);
 
   // Same SSR/hydration guard as everywhere else persisted cart state renders (see
   // useHasMounted.ts) — never show real contents before the client has rehydrated.
   const safeItems = hasMounted ? items : [];
-  const subtotal = hasMounted ? getSubtotal() : 0;
+  const selectedSubtotal = hasMounted ? getSelectedSubtotal() : 0;
+  const selectedCount = safeItems.filter((i) => i.isSelected).length;
+  const allSelected = safeItems.length > 0 && selectedCount === safeItems.length;
 
   return (
     <Sheet open={isDrawerOpen} onOpenChange={(open) => (open ? openDrawer() : closeDrawer())}>
@@ -40,6 +44,16 @@ export function CartDrawer() {
           <CartEmptyState />
         ) : (
           <>
+            <label className="flex items-center gap-2 border-b border-border pb-3 text-xs text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={allSelected}
+                onChange={() => (allSelected ? deselectAll() : selectAll())}
+                className="h-4 w-4 accent-primary"
+              />
+              Select all ({selectedCount} of {safeItems.length} selected)
+            </label>
+
             <div className="flex-1 divide-y divide-border overflow-y-auto">
               {safeItems.map((item) => (
                 <CartLineItem key={item.variantId} item={item} variant="compact" />
@@ -50,16 +64,28 @@ export function CartDrawer() {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-display text-base text-foreground">
-                  {formatPKR(subtotal)}
+                  {formatPKR(selectedSubtotal)}
                 </span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 Delivery calculated at checkout.
               </p>
               <div className="mt-4 flex flex-col gap-2">
-                <Button asChild size="lg" onClick={closeDrawer}>
-                  <Link href="/checkout">Checkout</Link>
-                </Button>
+                {/* Deliberately NOT `<Button asChild disabled><Link .../></Button>` — asChild
+                    merges props onto the underlying <a>, and `disabled` isn't a real HTML
+                    attribute for anchors, so it wouldn't actually block the click. Rendering
+                    a genuine disabled <button> (no Link/asChild at all) when nothing is
+                    selected is the only way this is actually unclickable, not just styled to
+                    look that way. */}
+                {selectedCount === 0 ? (
+                  <Button size="lg" disabled>
+                    Select items to checkout
+                  </Button>
+                ) : (
+                  <Button asChild size="lg" onClick={closeDrawer}>
+                    <Link href="/checkout">Checkout</Link>
+                  </Button>
+                )}
                 <Button asChild variant="outline" onClick={closeDrawer}>
                   <Link href="/cart">View Cart</Link>
                 </Button>

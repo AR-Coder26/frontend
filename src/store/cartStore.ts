@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 // One saleable unit in the cart is a PRODUCT + VARIANT combination, never just a product —
 // price, stock, and SKU all live on the variant (see Product.model.js). `productId` and
@@ -13,29 +13,40 @@ export interface CartItem {
   productName: string;
   image: string | null;
   color: string;
-  size: 'S' | 'M' | 'L' | 'XL';
-  fabricStatus: 'stitched' | 'unstitched';
+  size: "S" | "M" | "L" | "XL";
+  fabricStatus: "stitched" | "unstitched";
   unitPrice: number;
   comparePrice: number | null;
   quantity: number;
-  /** variant.stock at the moment this was added — caps quantity client-side as a UX nicety.
-   *  The server independently re-validates real stock at checkout via an atomic
-   *  findOneAndUpdate with a $gte guard (see order.controller.js), so this is never the
-   *  actual security boundary — just prevents an obviously-doomed checkout attempt. */
   maxStock: number;
+  isSelected: boolean;
 }
 
 interface CartState {
   items: CartItem[];
   isDrawerOpen: boolean;
-  addItem: (item: Omit<CartItem, 'quantity'>, quantity?: number) => void;
+  addItem: (
+    item: Omit<CartItem, "quantity" | "isSelected">,
+    quantity?: number,
+  ) => void;
   removeItem: (variantId: string) => void;
+  removeItems: (variantIds: string[]) => void;
   updateQuantity: (variantId: string, quantity: number) => void;
   clearCart: () => void;
   openDrawer: () => void;
   closeDrawer: () => void;
+  toggleSelected: (variantId: string) => void;
+  selectAll: () => void;
+  deselectAll: () => void;
+  /** Selects exactly one item and deselects every other item in the cart — this is what
+   *  "Buy Now" uses so it always isolates to just the item just added, regardless of what
+   *  was already selected/sitting in the cart before. */
+  selectOnly: (variantId: string) => void;
   getSubtotal: () => number;
   getTotalItems: () => number;
+  getSelectedItems: () => CartItem[];
+  getSelectedSubtotal: () => number;
+  getSelectedCount: () => number;
 }
 
 export const useCartStore = create<CartState>()(
@@ -46,13 +57,20 @@ export const useCartStore = create<CartState>()(
 
       addItem: (item, quantity = 1) => {
         set((state) => {
-          const existing = state.items.find((i) => i.variantId === item.variantId);
+          const existing = state.items.find(
+            (i) => i.variantId === item.variantId,
+          );
 
           if (existing) {
-            const nextQuantity = Math.min(existing.quantity + quantity, existing.maxStock);
+            const nextQuantity = Math.min(
+              existing.quantity + quantity,
+              existing.maxStock,
+            );
             return {
               items: state.items.map((i) =>
-                i.variantId === item.variantId ? { ...i, quantity: nextQuantity } : i
+                i.variantId === item.variantId
+                  ? { ...i, quantity: nextQuantity }
+                  : i,
               ),
               isDrawerOpen: true,
             };
@@ -60,14 +78,26 @@ export const useCartStore = create<CartState>()(
 
           const cappedQuantity = Math.max(1, Math.min(quantity, item.maxStock));
           return {
-            items: [...state.items, { ...item, quantity: cappedQuantity }],
+            items: [
+              ...state.items,
+              { ...item, quantity: cappedQuantity, isSelected: true },
+            ],
             isDrawerOpen: true,
           };
         });
       },
 
       removeItem: (variantId) => {
-        set((state) => ({ items: state.items.filter((i) => i.variantId !== variantId) }));
+        set((state) => ({
+          items: state.items.filter((i) => i.variantId !== variantId),
+        }));
+      },
+
+      removeItems: (variantIds) => {
+        const idsToRemove = new Set(variantIds);
+        set((state) => ({
+          items: state.items.filter((i) => !idsToRemove.has(i.variantId)),
+        }));
       },
 
       updateQuantity: (variantId, quantity) => {
@@ -77,7 +107,9 @@ export const useCartStore = create<CartState>()(
         }
         set((state) => ({
           items: state.items.map((i) =>
-            i.variantId === variantId ? { ...i, quantity: Math.min(quantity, i.maxStock) } : i
+            i.variantId === variantId
+              ? { ...i, quantity: Math.min(quantity, i.maxStock) }
+              : i,
           ),
         }));
       },
@@ -86,15 +118,64 @@ export const useCartStore = create<CartState>()(
       openDrawer: () => set({ isDrawerOpen: true }),
       closeDrawer: () => set({ isDrawerOpen: false }),
 
-      getSubtotal: () => get().items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0),
+      toggleSelected: (variantId) => {
+        set((state) => ({
+          items: state.items.map((i) =>
+            i.variantId === variantId ? { ...i, isSelected: !i.isSelected } : i,
+          ),
+        }));
+      },
+
+      selectAll: () => {
+        set((state) => ({
+          items: state.items.map((i) => ({ ...i, isSelected: true })),
+        }));
+      },
+
+      deselectAll: () => {
+        set((state) => ({
+          items: state.items.map((i) => ({ ...i, isSelected: false })),
+        }));
+      },
+
+      selectOnly: (variantId) => {
+        set((state) => ({
+          items: state.items.map((i) => ({
+            ...i,
+            isSelected: i.variantId === variantId,
+          })),
+        }));
+      },
+
+      getSubtotal: () =>
+        get().items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0),
       getTotalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
+
+      getSelectedItems: () => get().items.filter((i) => i.isSelected),
+      getSelectedSubtotal: () =>
+        get()
+          .items.filter((i) => i.isSelected)
+          .reduce((sum, i) => sum + i.unitPrice * i.quantity, 0),
+      getSelectedCount: () =>
+        get()
+          .items.filter((i) => i.isSelected)
+          .reduce((sum, i) => sum + i.quantity, 0),
     }),
     {
-      name: 'cart-storage',
+      name: "cart-storage",
       storage: createJSONStorage(() => localStorage),
-      // The drawer's open/closed state is a UI ripple, not data worth surviving a
-      // refresh — only `items` gets written to localStorage.
       partialize: (state) => ({ items: state.items }),
-    }
-  )
+      version: 1,
+      migrate: (persistedState, version) => {
+        const state = persistedState as { items?: Array<Partial<CartItem>> };
+        if (version < 1 && Array.isArray(state?.items)) {
+          state.items = state.items.map((item) => ({
+            ...item,
+            isSelected: item.isSelected ?? true,
+          }));
+        }
+        return state as CartState;
+      },
+    },
+  ),
 );

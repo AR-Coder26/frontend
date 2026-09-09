@@ -17,10 +17,19 @@ interface CartLineItemProps {
 export function CartLineItem({ item, variant = 'default' }: CartLineItemProps) {
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
+  const toggleSelected = useCartStore((state) => state.toggleSelected);
   const isCompact = variant === 'compact';
 
   return (
-    <div className={`flex gap-3 ${isCompact ? 'py-3' : 'py-4'}`}>
+    <div className={`flex gap-3 ${isCompact ? 'py-3' : 'py-4'} ${item.isSelected ? '' : 'opacity-50'}`}>
+      <input
+        type="checkbox"
+        checked={item.isSelected}
+        onChange={() => toggleSelected(item.variantId)}
+        aria-label={item.isSelected ? 'Included in checkout' : 'Excluded from checkout'}
+        className="mt-1 h-4 w-4 shrink-0 accent-primary"
+      />
+
       <Link
         href={`/products/${item.productSlug}`}
         className={`relative shrink-0 overflow-hidden rounded-md bg-secondary ${

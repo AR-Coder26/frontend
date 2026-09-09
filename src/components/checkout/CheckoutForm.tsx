@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -20,7 +20,8 @@ interface CheckoutFormProps {
 
 export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps) {
   const items = useCartStore((state) => state.items);
-  const clearCart = useCartStore((state) => state.clearCart);
+  const removeItems = useCartStore((state) => state.removeItems);
+  const selectedItems = useMemo(() => items.filter((i) => i.isSelected), [items]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -37,7 +38,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
   const watchedCity = watch('city') ?? '';
   const watchedPaymentMethod = watch('paymentMethod');
 
-  const subtotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+  const subtotal = selectedItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
   // The backend HARD-REJECTS (400 "Minimum order value is Rs. X") an order below this — see
   // order.controller.js. Disabling the submit here prevents a doomed round trip; the same
   // rule is also surfaced as a warning in OrderSummary.
@@ -58,7 +59,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
           city: values.city,
           postalCode: values.postalCode || undefined,
         },
-        items: items.map((item) => ({
+        items: selectedItems.map((item) => ({
           productId: item.productId,
           variantId: item.variantId,
           quantity: item.quantity,
@@ -66,7 +67,11 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
         paymentMethod: values.paymentMethod,
       });
 
-      clearCart();
+      // Only removes what was actually just ordered — anything left deselected in the cart
+      // (a different product the customer wasn't ready to buy yet) stays exactly where it
+      // was. This used to be clearCart(), which wiped the ENTIRE cart including items that
+      // were never part of this order at all.
+      removeItems(selectedItems.map((item) => item.variantId));
       onOrderPlaced(order);
     } catch (error) {
       if (error instanceof ApiError) {
@@ -202,7 +207,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
       </div>
 
       <div className="h-fit lg:sticky lg:top-24">
-        <OrderSummary items={items} city={watchedCity} storeSettings={storeSettings} />
+        <OrderSummary items={selectedItems} city={watchedCity} storeSettings={storeSettings} />
         <Button
           type="submit"
           size="lg"

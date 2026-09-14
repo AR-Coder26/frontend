@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { HoneypotField } from '@/components/auth/HoneypotField';
 import { loginAdmin } from '@/lib/api/auth';
 import { ApiError } from '@/lib/api/client';
 import { useAdminAuthStore } from '@/store/adminAuthStore';
@@ -76,6 +78,8 @@ export function AdminLoginForm({ redirectTo }: AdminLoginFormProps) {
         </div>
       )}
 
+      <HoneypotField registration={register('honeypot')} />
+
       <div>
         <label htmlFor="email" className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
           Email
@@ -124,18 +128,10 @@ export function AdminLoginForm({ redirectTo }: AdminLoginFormProps) {
         {isSubmitting ? 'Logging in…' : 'Log In'}
       </Button>
 
-      {/*
-        Deliberately NOT a "Forgot password?" link — there is no reset endpoint anywhere on
-        the backend (checked every admin auth route/controller). The real, documented
-        recovery path is the createAdmin.js CLI script's reset mode, run by whoever has
-        server access — see backend PROJECT_STATE §12 item 6. A clickable link with nowhere
-        real to go would be exactly the kind of placeholder this build was asked to avoid, so
-        this is plain, honest text instead.
-      */}
-      <p className="text-center text-xs text-neutral-400">
-        Forgot your password? Ask whoever has server access to reset it via the
-        <code className="mx-1 rounded bg-neutral-100 px-1 py-0.5 text-[11px]">createAdmin.js</code>
-        script.
+      <p className="text-center text-xs text-neutral-500">
+        <Link href="/admin/forgot-password" className="underline underline-offset-2 hover:text-neutral-800">
+          Forgot your password?
+        </Link>
       </p>
       <p className="text-center text-xs text-neutral-400">
         Admin accounts are provisioned by the developer — there is no self-service sign-up.

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { getCategories } from '@/lib/api/categories';
 import { getPublicStoreSettings } from '@/lib/api/storeSettings';
 import { buildStoreWhatsAppLink } from '@/lib/whatsapp';
+import { STORE_LEGAL_NAME } from '@/lib/legal';
 
 /**
  * Server Component. Every link and badge below is derived from real backend data (live
@@ -31,7 +32,7 @@ export async function Footer() {
       <div className="container grid gap-10 py-12 md:grid-cols-4">
         <div>
           {/* Same logo asset as HeaderNav.tsx — public/Assets/logo/Brand-logo.svg. */}
-          <Image src="/Assets/logo/Brand-logo.svg" alt="Brandox" width={120} height={28} className="h-12 w-auto" />
+          <Image src="/Assets/logo/Brand-logo.svg" alt={STORE_LEGAL_NAME} width={120} height={28} className="h-12 w-auto" />
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">
             Stitched &amp; unstitched suits in Lawn, Cotton, Khaddar, Chiffon and Silk.
           </p>
@@ -111,15 +112,23 @@ export async function Footer() {
       </div>
 
       <div className="border-t border-border">
-        <div className="container flex flex-col items-center justify-between gap-2 py-4 text-xs text-muted-foreground sm:flex-row">
-          {/* Real store name — was a placeholder "Women's Clothing Store" before. */}
-          <p>© {new Date().getFullYear()} Brandox. All rights reserved.</p>
+        <div className="container flex flex-col items-center gap-3 py-4 text-xs text-muted-foreground sm:flex-row sm:flex-wrap sm:justify-between sm:gap-x-4">
+          <p>© {new Date().getFullYear()} {STORE_LEGAL_NAME}. All rights reserved.</p>
+
+          <nav aria-label="Legal" className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+            <Link href="/terms-of-service" className="hover:text-foreground">
+              Terms of Service
+            </Link>
+            <Link href="/privacy-policy" className="hover:text-foreground">
+              Privacy Policy
+            </Link>
+            <Link href="/refund-policy" className="hover:text-foreground">
+              Refund Policy
+            </Link>
+          </nav>
+
           <div className="flex items-center gap-4">
             <p>Order updates are sent via WhatsApp, not courier tracking.</p>
-            {/* Deliberately tiny and low-contrast, not a nav item — most storefronts don't
-                surface their admin panel prominently in the public UI at all (it's normally
-                just bookmarked directly). This is a compromise: SOME discoverable path exists
-                without putting "Admin" next to Cart/Wishlist where every visitor sees it. */}
             <Link href="/admin/login" className="text-muted-foreground/50 hover:text-muted-foreground">
               Admin
             </Link>

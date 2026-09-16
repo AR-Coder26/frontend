@@ -1,5 +1,3 @@
-// ---------- Shared primitives ----------
-
 export interface ImageAsset {
   url: string;
   publicId: string;
@@ -21,12 +19,6 @@ export type PaymentMethod = 'COD' | 'JazzCash' | 'EasyPaisa' | 'BankTransfer';
 export type OrderStatus = 'Pending' | 'Confirmed' | 'Shipped' | 'Delivered' | 'Cancelled';
 export type AdminRole = 'admin' | 'staff';
 
-/**
- * Generic shape for every paginated list endpoint. The backend does NOT use a consistent
- * `items` key — it names the array after the resource (`products`, `orders`, ...) — so `K`
- * pins down that exact key per-endpoint instead of guessing a generic one.
- * e.g. `Paginated<'products', Product>` -> { products: Product[]; total; page; totalPages }
- */
 export type Paginated<K extends string, T> = {
   total: number;
   page: number;
@@ -84,13 +76,6 @@ export interface Product {
   slug: string;
   description: string;
   category: ProductRelationRef;
-  // Nullable despite the backend's `required: true` on this field that only validates at
-  // WRITE time. If a product's brand reference is ever dangling (e.g. seed data inserted
-  // directly into MongoDB bypassing Mongoose validation, or in principle a brand deleted
-  // by some path other than the guarded DELETE /admin/brands/:id endpoint), Mongoose's
-  // .populate('brand') resolves it to null at READ time instead of erroring. Typed this way
-  // deliberately so TypeScript forces every display site to handle it, rather than trusting
-  // the schema's "required" as a runtime guarantee it doesn't actually provide.
   brand: ProductRelationRef | null;
   fabricType: FabricType;
   pieceCount: PieceCount;
@@ -243,6 +228,21 @@ export interface StoreSettingsAdmin {
   bankTransfer: AdminBankAccount;
   minOrderValue: number;
   deliveryFlatRateNonKarachi: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ---------- Social Media Links (Footer) ----------
+export interface SocialMediaLink {
+  _id: string;
+  platformName: string;
+  iconName: string;
+  /** Custom-uploaded brand logo, if any — takes visual precedence over the built-in iconName
+   *  SVG on the Footer whenever `logo.url` is set. */
+  logo: ImageAsset | null;
+  targetUrl: string;
+  isActive: boolean;
+  displayOrder: number;
   createdAt: string;
   updatedAt: string;
 }

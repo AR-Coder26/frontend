@@ -2,20 +2,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getCategories } from '@/lib/api/categories';
 import { getPublicStoreSettings } from '@/lib/api/storeSettings';
+import { getSocialLinks } from '@/lib/api/socialLinks';
 import { buildStoreWhatsAppLink } from '@/lib/whatsapp';
+import { SocialIcon } from '@/lib/socialIcons';
 import { STORE_LEGAL_NAME } from '@/lib/legal';
 
-/**
- * Server Component. Every link and badge below is derived from real backend data (live
- * categories, live active payment methods) — never a hardcoded marketing list. Payment
- * badges only show a method if StoreSettings actually returned it non-null (i.e. the admin
- * has it turned on AND fully configured) — see storeSettings.ts's comment on why `null`
- * means "don't advertise this option at all."
- */
 export async function Footer() {
-  const [categories, storeSettings] = await Promise.all([
+  const [categories, storeSettings, socialLinks] = await Promise.all([
     getCategories(),
     getPublicStoreSettings(),
+    getSocialLinks().catch(() => []),
   ]);
 
   const paymentBadges = [
@@ -45,6 +41,36 @@ export async function Footer() {
             >
               Chat with us on WhatsApp
             </a>
+          )}
+
+          {socialLinks.length > 0 && (
+            <div className="mt-5">
+              <p className="text-xs font-medium uppercase tracking-wider text-accent">Follow us</p>
+              <div className="mt-3 flex flex-wrap items-center gap-2.5">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link._id}
+                    href={link.targetUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.platformName}
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-foreground/70 transition-all duration-150 hover:-translate-y-0.5 hover:border-primary hover:text-primary hover:shadow-sm"
+                  >
+                    {link.logo?.url ? (
+                      <Image
+                        src={link.logo.url}
+                        alt={link.platformName}
+                        width={18}
+                        height={18}
+                        className="h-[18px] w-[18px] object-contain"
+                      />
+                    ) : (
+                      <SocialIcon name={link.iconName} className="h-4 w-4" />
+                    )}
+                  </a>
+                ))}
+              </div>
+            </div>
           )}
         </div>
 

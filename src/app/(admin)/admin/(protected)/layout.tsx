@@ -18,34 +18,20 @@ const NAV_ITEMS = [
   { label: 'Orders', href: '/admin/orders', showOrderBadge: true },
   { label: 'Customers', href: '/admin/customers' },
   { label: 'Settings', href: '/admin/settings' },
+  { label: 'Social Links', href: '/admin/social-links' },
 ] as const;
 
-/**
- * This is the sidebar shell that used to live directly at (admin)/admin/layout.tsx. It has
- * moved one level down into (protected)/layout.tsx — wrapped in RequireAdminAuth — for the
- * exact same reason (account)/account/layout.tsx is nested inside (account)/layout.tsx:
- * /admin/login is a SIBLING of (protected), not a child, so the guard here never wraps the
- * login page and can't create a redirect loop. See RequireAdminAuth.tsx's own comment.
- *
- * The old static "System Active" badge (which was never anything but decoration — there was
- * no session behind it) is now the real logged-in admin's name plus a working Logout button.
- */
 function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const admin = useAdminAuthStore((state) => state.admin);
   const clearAdmin = useAdminAuthStore((state) => state.clearAdmin);
-  // Only starts polling once `admin` is actually set — no point hitting an authenticated
-  // endpoint before the session check above has resolved to 'authenticated'.
   const unseenOrderCount = useAdminOrderNotifications(Boolean(admin));
 
   async function handleLogout() {
     try {
       await logoutAdmin();
     } finally {
-      // Same reasoning as AccountMenu's handleLogout: clear local state regardless of
-      // whether the network call itself succeeded — the cookie clear is what the server
-      // call was for, and leaving stale "logged in" UI up after a network hiccup is worse.
       clearAdmin();
       toast.success('Logged out');
       router.push('/admin/login');

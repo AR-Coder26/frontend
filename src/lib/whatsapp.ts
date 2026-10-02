@@ -1,9 +1,3 @@
-// The STORE's own WhatsApp Business number, for customer-initiated contact (the WhatsApp
-// FAB, and later the "Request Return via WhatsApp" button). This is DIFFERENT from
-// order.whatsappLink (backend/src/utils/whatsappLink.js), which is an ADMIN-side link for
-// messaging a specific CUSTOMER back using THEIR phone number. There is no store-facing
-// contact number configured anywhere in the backend — checked every controller/util file —
-// so it has to live here as an env var the client fills in before launch.
 const STORE_WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_STORE_WHATSAPP_NUMBER;
 
 /**

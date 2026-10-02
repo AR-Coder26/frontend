@@ -3,8 +3,6 @@ import { Button } from '@/components/ui/button';
 
 // Rendered by notFound() calls anywhere under (shop) — e.g. products/[slug]/page.tsx for a
 // product that doesn't exist. Living inside (shop) means it's still wrapped by
-// (shop)/layout.tsx's StorefrontShell, so Header/Footer/WhatsApp FAB stay visible instead of
-// falling back to Next's bare, unstyled default 404.
 export default function ShopNotFound() {
   return (
     <div className="container flex flex-col items-center justify-center py-24 text-center">

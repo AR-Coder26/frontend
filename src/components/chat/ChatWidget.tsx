@@ -1,10 +1,9 @@
-// frontend/src/components/chat/ChatWidget.tsx
 'use client';
 
 import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { MessageSquare, RotateCcw, X } from 'lucide-react';
-import { buildStoreWhatsAppLink } from '@/lib/whatsapp';
+import { usePathname } from 'next/navigation';
 import { useChatStore } from '@/store/chatStore';
 import { useCustomerAuthStore } from '@/store/customerAuthStore';
 import { ChatInput } from './ChatInput';
@@ -13,8 +12,8 @@ import { isSmallScreen } from './chatUtils';
 
 /**
  * Floating AI shopping assistant, mounted once in StorefrontShell so it appears on every
- * customer-facing page. The button sits above the WhatsApp FAB when that one is rendered
- * (it only renders when NEXT_PUBLIC_STORE_WHATSAPP_NUMBER is set), otherwise in its corner.
+ * customer-facing page. The launcher sits in the bottom-right corner; on mobile product
+ * pages it is lifted above the sticky add-to-cart bar instead of covering "Buy Now".
  */
 export function ChatWidget() {
   const isOpen = useChatStore((s) => s.isOpen);
@@ -32,7 +31,11 @@ export function ChatWidget() {
   const wasOpen = useRef(false);
   const previousAuth = useRef(authStatus);
 
-  const hasWhatsAppFab = buildStoreWhatsAppLink('hi') !== null;
+  // StorefrontShell-wide launcher position. Product detail pages pin StickyAddToCartBar to
+  // the bottom edge below the md breakpoint, so the launcher must clear it there.
+  const pathname = usePathname();
+  const hasStickyBar = pathname.startsWith('/products/');
+  const launcherPosition = hasStickyBar ? 'bottom-28 md:bottom-6' : 'bottom-5 sm:bottom-6';
 
   // Replies can contain a customer's order details: wipe the conversation on logout.
   useEffect(() => {
@@ -94,9 +97,7 @@ export function ChatWidget() {
             transition={reduceMotion ? { duration: 0 } : { delay: 0.5, duration: 0.35, ease: 'easeOut' }}
             whileHover={reduceMotion ? undefined : { scale: 1.06 }}
             whileTap={reduceMotion ? undefined : { scale: 0.94 }}
-            className={`fixed right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-black/20 transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:right-6 ${
-              hasWhatsAppFab ? 'bottom-[5.5rem] sm:bottom-[5.75rem]' : 'bottom-5 sm:bottom-6'
-            }`}
+            className={`fixed right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-black/20 transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:right-6 ${launcherPosition}`}
           >
             <MessageSquare className="h-6 w-6" />
           </motion.button>

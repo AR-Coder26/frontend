@@ -11,6 +11,7 @@ import { useWishlistStore } from '@/store/wishlistStore';
 import { useHasMounted } from '@/hooks/useHasMounted';
 import type { Category } from '@/types';
 import { AccountMenu } from './AccountMenu';
+import { OverflowNav } from './OverflowNav';
 import { Heart, Menu, ShoppingBag } from 'lucide-react';
 
 interface HeaderNavProps {
@@ -24,10 +25,14 @@ export function HeaderNav({ categories }: HeaderNavProps) {
   const openCartDrawer = useCartStore((state) => state.openDrawer);
   const wishlistCount = useWishlistStore((state) => state.items.length);
 
-  const navLinks = [
-    ...categories.map((category) => ({ label: category.name, href: `/category/${category.slug}` })),
-    { label: '30% Off', href: '/sale' },
-  ];
+  const categoryLinks = categories.map((category) => ({
+    label: category.name,
+    href: `/category/${category.slug}`,
+  }));
+  // "30% Off" is a promotion, not a category: on desktop it stays pinned in the bar and is
+  // never moved into the "More" menu, however many categories exist.
+  const pinnedLinks = [{ label: '30% Off', href: '/sale' }];
+  const navLinks = [...categoryLinks, ...pinnedLinks];
 
   return (
     <div className="border-b border-border bg-background">
@@ -35,7 +40,7 @@ export function HeaderNav({ categories }: HeaderNavProps) {
         {/* Real logo — file lives at public/Assets/logo/Brand-logo.svg. Height fixed at 32px,
             width auto so the SVG's natural aspect ratio is preserved regardless of how wide
             the actual wordmark/mark combination turns out to be. */}
-        <Link href="/" className="flex items-center" aria-label="Brandox — home">
+        <Link href="/" className="flex shrink-0 items-center" aria-label="Brandox — home">
           <Image
             src="/Assets/logo/Brand-logo.svg"
             alt="Brandox"
@@ -46,23 +51,9 @@ export function HeaderNav({ categories }: HeaderNavProps) {
           />
         </Link>
 
-        <nav className="hidden items-center gap-7 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="group relative py-2 text-sm text-foreground/80 transition-colors hover:text-foreground"
-            >
-              {link.label}
-              {/* Signature interaction: a thread of gold draws in under the label on
-                  hover — a nod to the zari/gota trim on the fabrics this store actually
-                  sells, not a generic underline. */}
-              <span className="absolute inset-x-0 -bottom-px h-px origin-left scale-x-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100" />
-            </Link>
-          ))}
-        </nav>
+        <OverflowNav links={categoryLinks} pinnedLinks={pinnedLinks} aria-label="Shop by category" />
 
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           <AccountMenu />
 
           <Button variant="ghost" size="icon" asChild className="relative">

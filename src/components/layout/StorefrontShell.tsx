@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { WhatsAppFAB } from './WhatsAppFAB';
+import { ChatWidget } from '@/components/chat/ChatWidget';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { CustomerAuthInitializer } from './CustomerAuthInitializer';
 
@@ -17,6 +18,7 @@ export function StorefrontShell({ children }: { children: ReactNode }) {
       <main className="flex-1">{children}</main>
       <Footer />
       <WhatsAppFAB />
+      <ChatWidget />
       <CartDrawer />
       <CustomerAuthInitializer />
     </div>

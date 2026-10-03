@@ -1,4 +1,3 @@
-// frontend/src/app/(admin)/admin/(protected)/social-links/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -83,6 +82,9 @@ export default function AdminSocialLinksPage() {
 
     const reordered = [...links];
     const [moved] = reordered.splice(index, 1);
+    
+    if (!moved) return; 
+    
     reordered.splice(targetIndex, 0, moved);
 
     const previousLinks = links; // for rollback if the request fails

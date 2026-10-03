@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { request } from './client';
 import { getCurrentCustomer } from './auth';
 import { useCustomerAuthStore } from '@/store/customerAuthStore';

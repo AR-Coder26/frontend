@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { StorefrontShell } from '@/components/layout/StorefrontShell';
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {

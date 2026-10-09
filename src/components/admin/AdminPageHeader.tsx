@@ -8,10 +8,10 @@ interface AdminPageHeaderProps {
 
 export function AdminPageHeader({ title, description, action }: AdminPageHeaderProps) {
   return (
-    <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight text-neutral-900">{title}</h2>
-        {description && <p className="mt-1 text-sm text-neutral-500">{description}</p>}
+    <div className="mb-5 flex flex-wrap items-start justify-between gap-3 sm:mb-6 sm:gap-4">
+      <div className="min-w-0">
+        <h2 className="break-words text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl">{title}</h2>
+        {description && <p className="mt-1 break-words text-sm text-neutral-500">{description}</p>}
       </div>
       {action && <div className="shrink-0">{action}</div>}
     </div>

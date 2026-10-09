@@ -102,7 +102,7 @@ export const OtpInput = forwardRef<OtpInputHandle, OtpInputProps>(function OtpIn
           onPaste={handlePaste}
           aria-label={`Digit ${index + 1} of ${OTP_LENGTH}`}
           className={cn(
-            'h-12 w-11 rounded-md border text-center text-lg font-semibold tracking-widest text-neutral-900',
+            'h-12 min-w-0 max-w-[2.75rem] flex-1 rounded-md border text-center text-lg font-semibold tracking-widest text-neutral-900',
             'focus:outline-none focus:ring-1 focus:ring-neutral-900',
             'disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-400',
             invalid ? 'border-red-400' : 'border-neutral-300'

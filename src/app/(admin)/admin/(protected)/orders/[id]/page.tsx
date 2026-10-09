@@ -136,7 +136,7 @@ export default function AdminOrderDetailPage() {
         <div className="space-y-6 lg:col-span-2">
           <section className="rounded-lg border border-neutral-200 bg-white p-5">
             <h3 className="mb-3 text-sm font-semibold text-neutral-900">Items</h3>
-            <Table>
+            <Table stackOnMobile>
               <TableHeader>
                 <TableRow>
                   <TableHead>Product</TableHead>
@@ -149,13 +149,13 @@ export default function AdminOrderDetailPage() {
               <TableBody>
                 {order.items.map((item, i) => (
                   <TableRow key={`${item.variantSku}-${i}`}>
-                    <TableCell className="font-medium text-neutral-900">{item.productName}</TableCell>
-                    <TableCell className="text-neutral-500">
+                    <TableCell label="Product" className="font-medium text-neutral-900">{item.productName}</TableCell>
+                    <TableCell label="Variant" className="text-neutral-500">
                       {item.color} / {item.size} / {item.fabricStatus}
                     </TableCell>
-                    <TableCell className="text-neutral-500">{item.quantity}</TableCell>
-                    <TableCell className="text-right text-neutral-500">{formatPKR(item.unitPrice)}</TableCell>
-                    <TableCell className="text-right font-medium text-neutral-900">{formatPKR(item.subtotal)}</TableCell>
+                    <TableCell label="Qty" className="text-neutral-500">{item.quantity}</TableCell>
+                    <TableCell label="Unit Price" className="text-right text-neutral-500">{formatPKR(item.unitPrice)}</TableCell>
+                    <TableCell label="Subtotal" className="text-right font-medium text-neutral-900">{formatPKR(item.subtotal)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -182,7 +182,7 @@ export default function AdminOrderDetailPage() {
           {order.orderStatus === 'Cancelled' && (
             <section className="rounded-lg border border-destructive/30 bg-destructive/5 p-5">
               <h3 className="mb-1 text-sm font-semibold text-destructive">Cancelled</h3>
-              <p className="text-sm text-neutral-700">{order.cancelReason}</p>
+              <p className="break-words text-sm text-neutral-700">{order.cancelReason}</p>
               {order.cancelledAt && (
                 <p className="mt-1 text-xs text-neutral-500">{format(new Date(order.cancelledAt), 'd MMM yyyy, h:mm a')}</p>
               )}

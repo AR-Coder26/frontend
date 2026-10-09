@@ -109,7 +109,7 @@ export function SocialLinkFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90dvh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{link ? 'Edit Social Link' : 'Add Social Link'}</DialogTitle>
         </DialogHeader>

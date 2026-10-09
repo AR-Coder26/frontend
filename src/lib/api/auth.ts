@@ -1,4 +1,10 @@
-import { request, adminRequest, customerRequest } from './client';
+import {
+  request,
+  adminRequest,
+  ApiError,
+  refreshCustomerSession,
+  refreshAdminSession,
+} from './client';
 import type { AdminUser, Customer, CustomerAuthSummary } from '@/types';
 
 // ---------- Customer ----------
@@ -30,9 +36,27 @@ export function logoutCustomer() {
   return request<null>('/auth/logout', { method: 'POST' });
 }
 
-/** Only this endpoint returns `addresses` — register/login deliberately don't. */
-export function getCurrentCustomer() {
-  return customerRequest<Customer>('/auth/me');
+interface CustomerSessionProbe {
+  authenticated: boolean;
+  canRefresh: boolean;
+  customer: Customer | null;
+}
+
+/**
+ * Session check run on every storefront page load. Uses GET /auth/session, which ALWAYS answers
+ * 200 and says whether the visitor is signed in (and includes `addresses`, like /auth/me).
+ * Anonymous visitors therefore cost one quiet request instead of `/auth/me` 401 + `/auth/refresh`
+ * 401. If the short-lived access cookie expired but a refresh cookie exists, refresh first, then
+ * ask again. `/auth/me` itself is unchanged and still returns 401 when logged out.
+ * Throws ApiError(401) when there is no session — customerAuthStore treats that as "logged out".
+ */
+export async function getCurrentCustomer(): Promise<Customer> {
+  let probe = await request<CustomerSessionProbe>('/auth/session');
+  if (!probe.authenticated && probe.canRefresh && (await refreshCustomerSession())) {
+    probe = await request<CustomerSessionProbe>('/auth/session');
+  }
+  if (probe.authenticated && probe.customer) return probe.customer;
+  throw new ApiError(401, 'Not signed in');
 }
 
 // ---------- Admin ----------
@@ -53,8 +77,21 @@ export function logoutAdmin() {
   return request<null>('/admin/auth/logout', { method: 'POST' });
 }
 
-export function getCurrentAdmin() {
-  return adminRequest<AdminUser>('/admin/auth/me');
+interface AdminSessionProbe {
+  authenticated: boolean;
+  canRefresh: boolean;
+  admin: AdminUser | null;
+}
+
+/** Admin counterpart of getCurrentCustomer: GET /admin/auth/session never errors for a logged-out
+ *  visitor (the login page runs this on every load). `/admin/auth/me` remains strict. */
+export async function getCurrentAdmin(): Promise<AdminUser> {
+  let probe = await request<AdminSessionProbe>('/admin/auth/session');
+  if (!probe.authenticated && probe.canRefresh && (await refreshAdminSession())) {
+    probe = await request<AdminSessionProbe>('/admin/auth/session');
+  }
+  if (probe.authenticated && probe.admin) return probe.admin;
+  throw new ApiError(401, 'Not signed in');
 }
 
 export interface ChangeAdminPasswordPayload {

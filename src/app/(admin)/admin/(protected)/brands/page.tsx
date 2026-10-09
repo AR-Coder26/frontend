@@ -87,7 +87,7 @@ export default function AdminBrandsPage() {
           No brands yet. Add your first one to get started.
         </div>
       ) : (
-        <Table>
+        <Table stackOnMobile>
           <TableHeader>
             <TableRow>
               <TableHead>Logo</TableHead>
@@ -100,7 +100,7 @@ export default function AdminBrandsPage() {
           <TableBody>
             {brands.map((brand) => (
               <TableRow key={brand._id}>
-                <TableCell>
+                <TableCell label="Logo">
                   <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-neutral-100">
                     {brand.logo?.url ? (
                       <Image src={brand.logo.url} alt={brand.name} width={40} height={40} className="h-full w-full object-cover" />
@@ -109,12 +109,12 @@ export default function AdminBrandsPage() {
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="font-medium text-neutral-900">{brand.name}</TableCell>
-                <TableCell className="text-neutral-500">{brand.slug}</TableCell>
-                <TableCell>
+                <TableCell label="Name" className="font-medium text-neutral-900">{brand.name}</TableCell>
+                <TableCell label="Slug" className="text-neutral-500">{brand.slug}</TableCell>
+                <TableCell label="Status">
                   <Badge variant={brand.isActive ? 'success' : 'outline'}>{brand.isActive ? 'Active' : 'Inactive'}</Badge>
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell label="" className="text-right">
                   <div className="flex justify-end gap-2">
                     <button
                       type="button"

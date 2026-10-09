@@ -73,7 +73,7 @@ export function CategoryFormDialog({ open, onOpenChange, category, onSaved }: Ca
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90dvh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{category ? 'Edit Category' : 'Add Category'}</DialogTitle>
         </DialogHeader>

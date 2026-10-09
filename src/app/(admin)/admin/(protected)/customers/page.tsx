@@ -28,26 +28,6 @@ interface CustomerSummary {
 const FETCH_PAGE_SIZE = 100;
 const MAX_PAGES = 20; // hard cap (2,000 orders) so this never runs away on a large catalog
 
-/**
- * IMPORTANT DESIGN NOTE (also shown in the UI below, not just here): the backend has no
- * dedicated admin "list customers" endpoint — there is no customerAdmin.routes.js, and the
- * Customer model only exposes itself/its own addresses via protectCustomer-gated routes (see
- * backend PROJECT_STATE §6). Guest checkouts don't even create a Customer document at all.
- *
- * Rather than invent a backend route that doesn't exist, or render fabricated rows (explicitly
- * against this task's "zero mock data" requirement), this page is built on the one thing that
- * IS real and already fully wired: GET /admin/orders. Every order carries a full
- * OrderCustomerInfo snapshot regardless of whether it was a guest or account checkout (see
- * backend PROJECT_STATE §5's Order model — customer.name/phone/whatsappNumber/email are always
- * captured, deliberately never live-referenced). Aggregating that by phone number gives a
- * genuine, live "who has actually ordered from us" view — arguably more useful for this
- * business than an account registry would be, since guest checkout is fully supported and a
- * meaningful share of real customers may never register an account at all.
- *
- * If a true customer-accounts admin view (browsing Customer documents directly, independent of
- * whether they've ordered) is wanted later, that requires a new backend endpoint — flagged here
- * rather than silently worked around.
- */
 export default function AdminCustomersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -169,7 +149,7 @@ export default function AdminCustomersPage() {
           {customers.length === 0 ? 'No orders have been placed yet.' : 'No customers match your search.'}
         </div>
       ) : (
-        <Table>
+        <Table stackOnMobile>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
@@ -184,20 +164,20 @@ export default function AdminCustomersPage() {
           <TableBody>
             {filtered.map((customer) => (
               <TableRow key={customer.phone}>
-                <TableCell className="font-medium text-neutral-900">{customer.name}</TableCell>
-                <TableCell>
+                <TableCell label="Name" className="font-medium text-neutral-900">{customer.name}</TableCell>
+                <TableCell label="Contact">
                   <p className="text-neutral-700">{customer.phone}</p>
                   {customer.email && <p className="text-xs text-neutral-400">{customer.email}</p>}
                 </TableCell>
-                <TableCell>
+                <TableCell label="Account">
                   <Badge variant={customer.hasAccount ? 'success' : 'outline'}>
                     {customer.hasAccount ? 'Registered' : 'Guest'}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-neutral-700">{customer.orderCount}</TableCell>
-                <TableCell className="font-medium text-neutral-900">{formatPKR(customer.totalSpent)}</TableCell>
-                <TableCell className="text-neutral-500">{format(new Date(customer.lastOrderAt), 'd MMM yyyy')}</TableCell>
-                <TableCell className="text-right">
+                <TableCell label="Orders" className="text-neutral-700">{customer.orderCount}</TableCell>
+                <TableCell label="Total Spent" className="font-medium text-neutral-900">{formatPKR(customer.totalSpent)}</TableCell>
+                <TableCell label="Last Order" className="text-neutral-500">{format(new Date(customer.lastOrderAt), 'd MMM yyyy')}</TableCell>
+                <TableCell label="" className="text-right">
                   <div className="flex justify-end gap-3">
                     <a
                       href={`https://wa.me/${customer.whatsappNumber.replace(/[^0-9]/g, '')}`}

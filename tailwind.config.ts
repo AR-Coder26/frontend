@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import tailwindcssAnimate from 'tailwindcss-animate';
 
 // Design-token source of truth (colors, radius, fonts) — the raw values live as HSL
 // triplets in src/app/globals.css `:root`, and this file just names them for Tailwind's
@@ -102,7 +103,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [tailwindcssAnimate],
 };
 
 export default config;

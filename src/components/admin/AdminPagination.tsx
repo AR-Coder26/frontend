@@ -12,7 +12,7 @@ export function AdminPagination({ page, totalPages, onPageChange }: AdminPaginat
   if (totalPages <= 1) return null;
 
   return (
-    <div className="mt-4 flex items-center justify-center gap-3">
+    <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
       <button
         type="button"
         disabled={page <= 1}

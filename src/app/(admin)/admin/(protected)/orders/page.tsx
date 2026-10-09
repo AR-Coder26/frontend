@@ -136,7 +136,7 @@ function OrdersListContent() {
         </div>
       ) : (
         <>
-          <Table>
+          <Table stackOnMobile>
             <TableHeader>
               <TableRow>
                 <TableHead>Order #</TableHead>
@@ -151,23 +151,23 @@ function OrdersListContent() {
             <TableBody>
               {orders.map((order) => (
                 <TableRow key={order._id} className={!order.isSeenByAdmin ? 'bg-amber-50/60' : undefined}>
-                  <TableCell>
+                  <TableCell label="Order #">
                     <Link href={`/admin/orders/${order._id}`} className="font-medium text-neutral-900 hover:underline">
                       {!order.isSeenByAdmin && <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-amber-500" aria-label="Unseen" />}
                       {order.orderNumber}
                     </Link>
                   </TableCell>
-                  <TableCell>
+                  <TableCell label="Customer">
                     <p className="text-neutral-900">{order.customer.name}</p>
                     <p className="text-xs text-neutral-500">{order.customer.phone}</p>
                   </TableCell>
-                  <TableCell className="text-neutral-500">{format(new Date(order.createdAt), 'd MMM yyyy, h:mm a')}</TableCell>
-                  <TableCell className="text-neutral-500">{order.paymentMethod}</TableCell>
-                  <TableCell className="font-medium text-neutral-900">{formatPKR(order.pricing.totalAmount)}</TableCell>
-                  <TableCell>
+                  <TableCell label="Date" className="text-neutral-500">{format(new Date(order.createdAt), 'd MMM yyyy, h:mm a')}</TableCell>
+                  <TableCell label="Payment" className="text-neutral-500">{order.paymentMethod}</TableCell>
+                  <TableCell label="Total" className="font-medium text-neutral-900">{formatPKR(order.pricing.totalAmount)}</TableCell>
+                  <TableCell label="Status">
                     <OrderStatusBadge status={order.orderStatus} />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell label="" className="text-right">
                     <div className="flex justify-end gap-2">
                       {!order.isSeenByAdmin && (
                         <button

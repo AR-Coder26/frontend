@@ -117,7 +117,7 @@ export default function AdminDashboardPage() {
                   <li key={order._id}>
                     <Link
                       href={`/admin/orders/${order._id}`}
-                      className="flex items-center justify-between px-5 py-3.5 hover:bg-neutral-50"
+                      className="flex flex-col gap-1.5 px-4 py-3.5 hover:bg-neutral-50 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5"
                     >
                       <div className="min-w-0">
                         <p className="truncate text-sm font-medium text-neutral-900">{order.orderNumber}</p>
@@ -125,7 +125,7 @@ export default function AdminDashboardPage() {
                           {order.customer.name} &middot; {order.customer.phone}
                         </p>
                       </div>
-                      <div className="flex shrink-0 items-center gap-4">
+                      <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
                         <span className="text-sm font-medium text-neutral-900">{formatPKR(order.pricing.totalAmount)}</span>
                         <OrderStatusBadge status={order.orderStatus} />
                       </div>

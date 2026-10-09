@@ -89,7 +89,7 @@ export default function AdminCategoriesPage() {
           No categories yet. Add your first one to get started.
         </div>
       ) : (
-        <Table>
+        <Table stackOnMobile>
           <TableHeader>
             <TableRow>
               <TableHead>Image</TableHead>
@@ -103,7 +103,7 @@ export default function AdminCategoriesPage() {
           <TableBody>
             {categories.map((category) => (
               <TableRow key={category._id}>
-                <TableCell>
+                <TableCell label="Image">
                   <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-neutral-100">
                     {category.image?.url ? (
                       <Image src={category.image.url} alt={category.name} width={40} height={40} className="h-full w-full object-cover" />
@@ -112,15 +112,15 @@ export default function AdminCategoriesPage() {
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="font-medium text-neutral-900">{category.name}</TableCell>
-                <TableCell className="text-neutral-500">{category.slug}</TableCell>
-                <TableCell className="text-neutral-500">{category.displayOrder}</TableCell>
-                <TableCell>
+                <TableCell label="Name" className="font-medium text-neutral-900">{category.name}</TableCell>
+                <TableCell label="Slug" className="text-neutral-500">{category.slug}</TableCell>
+                <TableCell label="Order" className="text-neutral-500">{category.displayOrder}</TableCell>
+                <TableCell label="Status">
                   <Badge variant={category.isActive ? 'success' : 'outline'}>
                     {category.isActive ? 'Active' : 'Inactive'}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell label="" className="text-right">
                   <div className="flex justify-end gap-2">
                     <button
                       type="button"

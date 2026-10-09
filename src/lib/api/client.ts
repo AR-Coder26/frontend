@@ -1,20 +1,3 @@
-// frontend/src/lib/api/client.ts
-
-// ─── Where API calls go ───────────────────────────────────────────────────────────────────
-// All addresses come from environment variables; nothing is hardcoded.
-//
-//   NEXT_PUBLIC_API_URL    Full URL of the backend API, including its /api prefix.
-//                          e.g. https://api.example.com/api
-//   NEXT_PUBLIC_API_PROXY  Optional. "true" makes the BROWSER call this site's own origin
-//                          under /api, and next.config.ts forwards those calls to
-//                          NEXT_PUBLIC_API_URL. Auth cookies then belong to the frontend's
-//                          origin (first-party), which is the only setup that survives
-//                          browsers that block third-party cookies when the frontend and
-//                          backend sit on unrelated hosts (e.g. two *.vercel.app apps).
-//                          Leave unset when both share a parent domain (see COOKIE_DOMAIN).
-//
-// Server-side rendering always talks to the backend directly: it has no browser cookie jar,
-// so there is nothing for a proxy to protect.
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const USE_API_PROXY = process.env.NEXT_PUBLIC_API_PROXY === 'true';
 
@@ -96,6 +79,12 @@ function refreshSession(refreshPath: string): Promise<boolean> {
   refreshInFlight.set(refreshPath, attempt);
   return attempt;
 }
+
+/** One shared, single-flight refresh attempt. Used by the session probes in auth.ts so that a
+ *  returning visitor whose short-lived access cookie has expired is refreshed WITHOUT first
+ *  provoking a 401 from a protected endpoint. */
+export const refreshCustomerSession = () => refreshSession(CUSTOMER_REFRESH_PATH);
+export const refreshAdminSession = () => refreshSession(ADMIN_REFRESH_PATH);
 
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { refreshPath, _isRetry, headers, body, ...rest } = options;

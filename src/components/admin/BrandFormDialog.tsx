@@ -63,7 +63,7 @@ export function BrandFormDialog({ open, onOpenChange, brand, onSaved }: BrandFor
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90dvh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{brand ? 'Edit Brand' : 'Add Brand'}</DialogTitle>
         </DialogHeader>

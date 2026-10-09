@@ -145,7 +145,7 @@ export default function AdminSocialLinksPage() {
           No social links yet. Add your first one to get started.
         </div>
       ) : (
-        <Table>
+        <Table stackOnMobile>
           <TableHeader>
             <TableRow>
               <TableHead className="w-20">Order</TableHead>
@@ -159,7 +159,7 @@ export default function AdminSocialLinksPage() {
           <TableBody>
             {links.map((link, index) => (
               <TableRow key={link._id}>
-                <TableCell>
+                <TableCell label="Order">
                   <div className="flex items-center gap-1">
                     <button
                       type="button"
@@ -181,7 +181,7 @@ export default function AdminSocialLinksPage() {
                     </button>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell label="Icon">
                   <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-md bg-neutral-100 text-neutral-600">
                     {link.logo?.url ? (
                       <Image
@@ -196,16 +196,16 @@ export default function AdminSocialLinksPage() {
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="font-medium text-neutral-900">{link.platformName}</TableCell>
-                <TableCell className="max-w-[240px] truncate text-neutral-500">
+                <TableCell label="Platform" className="font-medium text-neutral-900">{link.platformName}</TableCell>
+                <TableCell label="URL" className="max-w-[240px] truncate text-neutral-500">
                   <a href={link.targetUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
                     {link.targetUrl}
                   </a>
                 </TableCell>
-                <TableCell>
+                <TableCell label="Status">
                   <Badge variant={link.isActive ? 'success' : 'outline'}>{link.isActive ? 'Active' : 'Inactive'}</Badge>
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell label="" className="text-right">
                   <div className="flex justify-end gap-2">
                     <button
                       type="button"

@@ -19,9 +19,9 @@ export function StatCard({ label, value, icon: Icon, tone = 'default' }: StatCar
       <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${TONE_CLASSES[tone]}`}>
         <Icon className="h-5 w-5" />
       </div>
-      <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">{label}</p>
-        <p className="mt-0.5 text-2xl font-bold text-neutral-900">{value}</p>
+      <div className="min-w-0">
+        <p className="truncate text-xs font-medium uppercase tracking-wide text-neutral-500">{label}</p>
+        <p className="mt-0.5 truncate text-xl font-bold text-neutral-900 sm:text-2xl">{value}</p>
       </div>
     </div>
   );

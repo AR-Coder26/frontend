@@ -180,7 +180,7 @@ export default function AdminProductsPage() {
         </div>
       ) : (
         <>
-          <Table>
+          <Table stackOnMobile>
             <TableHeader>
               <TableRow>
                 <TableHead>Image</TableHead>
@@ -198,7 +198,7 @@ export default function AdminProductsPage() {
                 const thumb = product.images.find((img) => img.url) ?? product.variants.find((v) => v.images.some((i) => i.url))?.images.find((i) => i.url);
                 return (
                   <TableRow key={product._id}>
-                    <TableCell>
+                    <TableCell label="Image">
                       <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-neutral-100">
                         {thumb?.url ? (
                           <Image src={thumb.url} alt={product.name} width={40} height={40} className="h-full w-full object-cover" />
@@ -207,16 +207,16 @@ export default function AdminProductsPage() {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="max-w-[220px] truncate font-medium text-neutral-900">{product.name}</TableCell>
-                    <TableCell className="text-neutral-500">{product.category?.name ?? '—'}</TableCell>
+                    <TableCell label="Name" className="max-w-[220px] truncate font-medium text-neutral-900">{product.name}</TableCell>
+                    <TableCell label="Category" className="text-neutral-500">{product.category?.name ?? '—'}</TableCell>
                     {/* brand is nullable at read time even though required at write time — see types/index.ts */}
-                    <TableCell className="text-neutral-500">{product.brand?.name ?? '—'}</TableCell>
-                    <TableCell className="text-neutral-500">
+                    <TableCell label="Brand" className="text-neutral-500">{product.brand?.name ?? '—'}</TableCell>
+                    <TableCell label="Price" className="text-neutral-500">
                       {product.minPrice === product.maxPrice
                         ? formatPKR(product.minPrice)
                         : `${formatPKR(product.minPrice)} – ${formatPKR(product.maxPrice)}`}
                     </TableCell>
-                    <TableCell>
+                    <TableCell label="Stock">
                       {product.isOutOfStock ? (
                         <Badge variant="destructive">Out of stock</Badge>
                       ) : product.totalStock <= 5 ? (
@@ -225,12 +225,12 @@ export default function AdminProductsPage() {
                         <span className="text-neutral-500">{product.totalStock}</span>
                       )}
                     </TableCell>
-                    <TableCell>
+                    <TableCell label="Status">
                       <Badge variant={product.isActive ? 'success' : 'outline'}>
                         {product.isActive ? 'Active' : 'Inactive'}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell label="" className="text-right">
                       <div className="flex justify-end gap-2">
                         <Link
                           href={`/admin/products/${product._id}/edit`}

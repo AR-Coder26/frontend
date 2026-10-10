@@ -27,7 +27,7 @@ export async function Footer() {
     'Hi! I have a question about an order.'
   );
 
-  const storeEmail = storeSettings.email || 'support@brandox.pk';
+  const storeEmail = storeSettings.email || 'Brandox712@gmail.com';
 
   return (
     <footer className="border-t border-border bg-secondary">

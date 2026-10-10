@@ -33,7 +33,7 @@ import {
 } from "@/lib/validators/adminAuth";
 import type { StoreSettingsAdmin } from "@/types";
 
-export default function AdminSettingsPage() {
+function OwnerSettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -165,7 +165,7 @@ export default function AdminSettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="py-16 text-center text-sm text-neutral-500">
+      <div className="py-16 text-center text-sm text-muted-foreground">
         Loading settings…
       </div>
     );
@@ -195,8 +195,8 @@ export default function AdminSettingsPage() {
           errors={errors}
         />
 
-        <section className="rounded-lg border border-neutral-200 bg-white p-6">
-          <h3 className="mb-4 text-sm font-semibold text-neutral-900">
+        <section className="rounded-lg border border-border bg-card p-6">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">
             Delivery & Orders
           </h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -226,7 +226,7 @@ export default function AdminSettingsPage() {
                 {...register("deliveryFlatRateNonKarachi")}
                 invalid={!!errors.deliveryFlatRateNonKarachi}
               />
-              <p className="mt-1 text-[11px] text-neutral-400">
+              <p className="mt-1 text-[11px] text-muted-foreground">
                 Karachi orders are always free delivery — not editable here.
               </p>
             </div>
@@ -240,7 +240,7 @@ export default function AdminSettingsPage() {
         </div>
       </form>
 
-      <div className="mt-10 border-t border-neutral-200 pt-8">
+      <div className="mt-10 border-t border-border pt-8">
         <ChangePasswordSection />
       </div>
     </div>
@@ -261,11 +261,11 @@ function JazzCashSection({ register, watch, errors }: PaymentSectionProps) {
   const isActive = watch("jazzCash.isActive");
   const err = errors.jazzCash;
   return (
-    <section className="rounded-lg border border-neutral-200 bg-white p-6">
+    <section className="rounded-lg border border-border bg-card p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-neutral-900">JazzCash</h3>
+        <h3 className="text-sm font-semibold text-foreground">JazzCash</h3>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-neutral-500">
+          <span className="text-xs text-muted-foreground">
             {isActive ? "Active" : "Inactive"}
           </span>
           <Switch {...register("jazzCash.isActive")} />
@@ -310,11 +310,11 @@ function EasyPaisaSection({ register, watch, errors }: PaymentSectionProps) {
   const isActive = watch("easyPaisa.isActive");
   const err = errors.easyPaisa;
   return (
-    <section className="rounded-lg border border-neutral-200 bg-white p-6">
+    <section className="rounded-lg border border-border bg-card p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-neutral-900">EasyPaisa</h3>
+        <h3 className="text-sm font-semibold text-foreground">EasyPaisa</h3>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-neutral-500">
+          <span className="text-xs text-muted-foreground">
             {isActive ? "Active" : "Inactive"}
           </span>
           <Switch {...register("easyPaisa.isActive")} />
@@ -359,13 +359,13 @@ function BankTransferSection({ register, watch, errors }: PaymentSectionProps) {
   const isActive = watch("bankTransfer.isActive");
   const err = errors.bankTransfer;
   return (
-    <section className="rounded-lg border border-neutral-200 bg-white p-6">
+    <section className="rounded-lg border border-border bg-card p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-neutral-900">
+        <h3 className="text-sm font-semibold text-foreground">
           Bank Transfer (Meezan Bank)
         </h3>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-neutral-500">
+          <span className="text-xs text-muted-foreground">
             {isActive ? "Active" : "Inactive"}
           </span>
           <Switch {...register("bankTransfer.isActive")} />
@@ -458,11 +458,11 @@ function ChangePasswordSection() {
   }
 
   return (
-    <section className="rounded-lg border border-neutral-200 bg-white p-6">
-      <h3 className="mb-1 text-sm font-semibold text-neutral-900">
+    <section className="rounded-lg border border-border bg-card p-6">
+      <h3 className="mb-1 text-sm font-semibold text-foreground">
         Change Password
       </h3>
-      <p className="mb-4 text-xs text-neutral-500">
+      <p className="mb-4 text-xs text-muted-foreground">
         You&apos;ll be signed out and need to log back in afterward.
       </p>
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-sm space-y-4">
@@ -502,4 +502,21 @@ function ChangePasswordSection() {
       </form>
     </section>
   );
+}
+
+/** Staff may only change their own password here; store settings are owner-only (also enforced by the API). */
+function StaffSettingsPage() {
+  return (
+    <div>
+      <AdminPageHeader title="Settings" description="Change your account password." />
+      <div className="max-w-xl">
+        <ChangePasswordSection />
+      </div>
+    </div>
+  );
+}
+
+export default function AdminSettingsPage() {
+  const role = useAdminAuthStore((s) => s.admin?.role);
+  return role === "admin" ? <OwnerSettingsPage /> : <StaffSettingsPage />;
 }

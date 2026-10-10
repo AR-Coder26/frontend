@@ -40,14 +40,80 @@
     --success: 140 26% 33%;           /* #3F6B4A Confirmed / Delivered order states */
     --success-foreground: 30 45% 97%;
 
-    --warning: 38 73% 40%;            /* #B8791E Pending / awaiting-confirmation order states */
+    --warning: 38 78% 33%;            /* Pending / awaiting-confirmation order states. Darkened from 38 73% 40%
+                                         (3.5:1 with its ivory text) to pass WCAG AA 4.5:1. */
     --warning-foreground: 30 45% 97%;
 
     --border: 32 33% 87%;             /* #E7DDD0 hairline rules, card borders */
     --input: 32 33% 87%;
     --ring: 38 52% 50%;               /* gold focus ring — matches accent, stays visible on ivory */
 
+    /* Admin sidebar. The sidebar is a deliberately dark surface in BOTH themes, so it has its
+       own tokens rather than borrowing background/foreground (which would flip it). */
+    --sidebar: 20 8% 9%;
+    --sidebar-foreground: 36 15% 88%;
+    --sidebar-muted: 30 8% 66%;
+    --sidebar-accent: 20 8% 17%;
+    --sidebar-border: 20 8% 17%;
+
+    /* Highlight swept across skeleton loaders (see .skeleton below). */
+    --skeleton-shine: 0 0% 100% / 0.6;
+
     --radius: 0.5rem;
+    color-scheme: light;
+  }
+
+  /* Dark theme — "Maroon & Ivory" after dark: warm near-black surfaces, ivory text, and the
+     maroon lifted to a rose tone. Maroon on near-black is only ~3:1, too weak for links and
+     active states, so --primary gets lighter here and --primary-foreground flips to dark ink
+     (both pairs measured >= 4.5:1; see the contrast table in the Phase 5 notes). Applied by
+     adding class="dark" to <html> (tailwind.config.ts: darkMode: ['class']). */
+  .dark {
+    --background: 20 14% 8%;          /* #171312 */
+    --foreground: 36 30% 93%;         /* warm ivory text */
+
+    --card: 20 12% 11%;
+    --card-foreground: 36 30% 93%;
+
+    --popover: 20 12% 11%;
+    --popover-foreground: 36 30% 93%;
+
+    --primary: 351 62% 66%;           /* lifted maroon / rose */
+    --primary-hover: 351 62% 72%;
+    --primary-foreground: 20 25% 9%;  /* dark ink on the lighter primary */
+
+    --secondary: 20 10% 16%;
+    --secondary-foreground: 36 30% 93%;
+
+    --muted: 20 10% 16%;
+    --muted-foreground: 30 12% 68%;
+
+    --accent: 38 55% 55%;
+    --accent-hover: 38 58% 62%;
+    --accent-foreground: 20 25% 9%;
+
+    --destructive: 6 68% 60%;
+    --destructive-foreground: 20 25% 9%;
+
+    --success: 140 32% 52%;
+    --success-foreground: 20 25% 9%;
+
+    --warning: 38 80% 55%;
+    --warning-foreground: 20 25% 9%;
+
+    --border: 20 10% 21%;
+    --input: 20 10% 24%;
+    --ring: 38 55% 55%;
+
+    --sidebar: 20 12% 6%;
+    --sidebar-foreground: 36 20% 88%;
+    --sidebar-muted: 30 8% 64%;
+    --sidebar-accent: 20 10% 14%;
+    --sidebar-border: 20 10% 15%;
+
+    --skeleton-shine: 0 0% 100% / 0.07;
+
+    color-scheme: dark;
   }
 }
 
@@ -89,7 +155,7 @@
        name directly in a hand-written selector like this one, with no `animate-shimmer`
        class ever appearing in markup, would get tree-shaken away with nothing at runtime. */
     @apply absolute inset-0 -translate-x-full animate-shimmer;
-    background-image: linear-gradient(90deg, transparent, hsl(var(--card) / 0.6), transparent);
+    background-image: linear-gradient(90deg, transparent, hsl(var(--skeleton-shine)), transparent);
   }
 }
 

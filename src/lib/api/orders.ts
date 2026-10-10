@@ -61,6 +61,8 @@ export function cancelMyOrder(id: string, cancelReason?: string) {
 export interface AdminOrderListParams {
   status?: OrderStatus;
   search?: string;
+  /** true = show ONLY archived (cancelled) orders. Default: archived orders are hidden. */
+  archived?: boolean;
   page?: number;
   limit?: number;
 }
@@ -108,4 +110,9 @@ export function uploadConfirmationProof(id: string, formData: FormData) {
     method: 'POST',
     body: formData,
   });
+}
+/** Archive (or restore) a CANCELLED order. Archived orders are deleted automatically 30 days after
+ *  archiving; restoring before then cancels the deletion. */
+export function archiveOrder(id: string, archived: boolean) {
+  return adminRequest<Order>(`/admin/orders/${id}/archive`, { method: 'PATCH', body: { archived } });
 }

@@ -59,6 +59,8 @@ export interface ProductVariant {
   fabricStatus: FabricStatus;
   price: number;
   comparePrice: number | null;
+  /** Only returned to the store owner on admin endpoints; never present for staff or the public. */
+  costPrice?: number | null;
   stock: number;
   images: ImageAsset[];
 }
@@ -179,6 +181,11 @@ export interface Order {
   isSeenByAdmin: boolean;
   firstMessageSent: boolean;
   firstMessageProof: ImageAsset | null;
+  // Archive (cancelled orders only). An archived order is deleted automatically at `deleteAt`.
+  isArchived?: boolean;
+  archivedAt?: string | null;
+  archivedBy?: string | null;
+  deleteAt?: string | null;
   createdAt: string;
   updatedAt: string;
   // Virtual, always present.
@@ -210,6 +217,7 @@ export interface StoreSettingsPublic {
   bankTransfer: PublicBankAccount | null;
   minOrderValue: number;
   deliveryFlatRateNonKarachi: number;
+  email: string;
 }
 
 export interface AdminWalletAccount extends PublicWalletAccount {
@@ -245,4 +253,47 @@ export interface SocialMediaLink {
   displayOrder: number;
   createdAt: string;
   updatedAt: string;
+}
+// ---------- Staff accounts (owner-only) ----------
+
+export interface StaffMember {
+  id: string;
+  name: string;
+  email: string;
+  employeeId: string;
+  role: 'staff';
+  isActive: boolean;
+  createdAt: string;
+}
+
+// ---------- Month-end report (owner-only) ----------
+
+export interface StatusBucket {
+  orders: number;
+  items: number;
+  value: number;
+}
+
+export interface MonthlyReport {
+  month: string;
+  range: { from: string; to: string };
+  basis: string;
+  ordersPlaced: number;
+  byStatus: Record<OrderStatus, StatusBucket>;
+  inProgress: StatusBucket;
+  cancelled: StatusBucket & { archived: number };
+  delivered: {
+    orders: number;
+    items: number;
+    productRevenue: number;
+    deliveryCharges: number;
+    totalCollected: number;
+    /** null while any delivered item has no recorded cost. */
+    productCost: number | null;
+    /** null unless EVERY delivered item has a recorded cost. Never an estimate. */
+    grossProfit: number | null;
+    profitComplete: boolean;
+    itemsMissingCost: number;
+    partial: { items: number; revenue: number; cost: number; profit: number } | null;
+  };
 }

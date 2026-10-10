@@ -260,24 +260,24 @@ export function AdminForgotPasswordFlow() {
     return (
       <div className="space-y-4 text-center">
         <ShieldAlert
-          className="mx-auto h-10 w-10 text-red-500"
+          className="mx-auto h-10 w-10 text-destructive"
           aria-hidden="true"
         />
         <div>
-          <p className="text-sm font-semibold text-neutral-900">
+          <p className="text-sm font-semibold text-foreground">
             Account temporarily locked
           </p>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Too many failed verification attempts. For security, this account is
             locked for 2 hours.
           </p>
         </div>
-        <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+        <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm font-medium text-destructive">
           Try again in {formatLongDuration(lockoutCountdown.secondsRemaining)}
         </div>
         <Link
           href="/admin/login"
-          className="inline-block text-xs text-neutral-500 underline underline-offset-2"
+          className="inline-block text-xs text-muted-foreground underline underline-offset-2"
         >
           Back to login
         </Link>
@@ -292,7 +292,7 @@ export function AdminForgotPasswordFlow() {
         onSubmit={requestForm.handleSubmit(onSubmitRequest)}
         className="space-y-4"
       >
-        <p className="text-sm text-neutral-500">
+        <p className="text-sm text-muted-foreground">
           Enter your admin email and we&apos;ll send a 6-digit verification code
           to it.
         </p>
@@ -304,7 +304,7 @@ export function AdminForgotPasswordFlow() {
         <div>
           <label
             htmlFor="fp-email"
-            className="text-xs font-semibold uppercase tracking-wide text-neutral-500"
+            className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
           >
             Email
           </label>
@@ -313,10 +313,10 @@ export function AdminForgotPasswordFlow() {
             type="email"
             autoComplete="username"
             {...requestForm.register("email")}
-            className="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-900"
+            className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           {requestForm.formState.errors.email && (
-            <p className="mt-1 text-xs text-red-600">
+            <p className="mt-1 text-xs text-destructive">
               {requestForm.formState.errors.email.message}
             </p>
           )}
@@ -326,7 +326,7 @@ export function AdminForgotPasswordFlow() {
           type="submit"
           size="lg"
           disabled={isSubmitting}
-          className="w-full bg-neutral-900 text-white hover:bg-neutral-800"
+          className="w-full bg-foreground text-background hover:bg-foreground/90"
         >
           {isSubmitting ? (
             <>
@@ -340,7 +340,7 @@ export function AdminForgotPasswordFlow() {
 
         <Link
           href="/admin/login"
-          className="block text-center text-xs text-neutral-500 underline underline-offset-2"
+          className="block text-center text-xs text-muted-foreground underline underline-offset-2"
         >
           Back to login
         </Link>
@@ -355,9 +355,9 @@ export function AdminForgotPasswordFlow() {
         onSubmit={verifyForm.handleSubmit(onSubmitVerify)}
         className="space-y-4"
       >
-        <p className="text-center text-sm text-neutral-500">
+        <p className="text-center text-sm text-muted-foreground">
           Enter the 6-digit code sent to{" "}
-          <span className="font-medium text-neutral-800">{email}</span>
+          <span className="font-medium text-foreground">{email}</span>
         </p>
 
         {/* Backend: honeypot.middleware.js on the /admin/auth/verify-otp route. */}
@@ -378,14 +378,14 @@ export function AdminForgotPasswordFlow() {
           )}
         />
         {verifyForm.formState.errors.otp && (
-          <p className="text-center text-xs text-red-600">
+          <p className="text-center text-xs text-destructive">
             {verifyForm.formState.errors.otp.message}
           </p>
         )}
 
-        <div className="text-center text-xs text-neutral-500">
+        <div className="text-center text-xs text-muted-foreground">
           {otpCountdown.isExpired ? (
-            <span className="font-medium text-red-600">Code expired</span>
+            <span className="font-medium text-destructive">Code expired</span>
           ) : (
             <>
               Code expires in{" "}
@@ -398,7 +398,7 @@ export function AdminForgotPasswordFlow() {
           type="submit"
           size="lg"
           disabled={isSubmitting || otpCountdown.isExpired}
-          className="w-full bg-neutral-900 text-white hover:bg-neutral-800"
+          className="w-full bg-foreground text-background hover:bg-foreground/90"
         >
           {isSubmitting ? (
             <>
@@ -412,7 +412,7 @@ export function AdminForgotPasswordFlow() {
         {/* Non-blocking reassurance during the backend's ~3s tarpit delay on failed attempts —
             see withSlowNotice()'s comment above. Never shown on a fast, successful request. */}
         {showSlowNotice && (
-          <p className="text-center text-xs text-neutral-400">
+          <p className="text-center text-xs text-muted-foreground">
             Checking your code securely, this can take a few seconds…
           </p>
         )}
@@ -425,7 +425,7 @@ export function AdminForgotPasswordFlow() {
           type="button"
           onClick={handleResend}
           disabled={!otpCountdown.isExpired || isResending}
-          className="block w-full text-center text-xs text-neutral-500 underline underline-offset-2 disabled:cursor-not-allowed disabled:text-neutral-300 disabled:no-underline"
+          className="block w-full text-center text-xs text-muted-foreground underline underline-offset-2 disabled:cursor-not-allowed disabled:text-muted-foreground/60 disabled:no-underline"
         >
           {isResending
             ? "Sending new code…"
@@ -437,7 +437,7 @@ export function AdminForgotPasswordFlow() {
         <button
           type="button"
           onClick={handleStartOver}
-          className="block w-full text-center text-xs text-neutral-400 underline underline-offset-2"
+          className="block w-full text-center text-xs text-muted-foreground underline underline-offset-2"
         >
           Use a different email
         </button>
@@ -450,14 +450,14 @@ export function AdminForgotPasswordFlow() {
     if (resetTokenCountdown.isExpired) {
       return (
         <div className="space-y-3 text-center">
-          <p className="text-sm text-red-600">
+          <p className="text-sm text-destructive">
             Your verification has expired. Please start the process again.
           </p>
           <Button
             type="button"
             onClick={handleStartOver}
             size="lg"
-            className="w-full bg-neutral-900 text-white hover:bg-neutral-800"
+            className="w-full bg-foreground text-background hover:bg-foreground/90"
           >
             Start Over
           </Button>
@@ -470,7 +470,7 @@ export function AdminForgotPasswordFlow() {
         onSubmit={resetForm.handleSubmit(onSubmitReset)}
         className="space-y-4"
       >
-        <p className="text-center text-xs text-neutral-500">
+        <p className="text-center text-xs text-muted-foreground">
           Set a new password. This step expires in{" "}
           {formatMinutesSeconds(resetTokenCountdown.secondsRemaining)}.
         </p>
@@ -481,7 +481,7 @@ export function AdminForgotPasswordFlow() {
         <div>
           <label
             htmlFor="fp-new-password"
-            className="text-xs font-semibold uppercase tracking-wide text-neutral-500"
+            className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
           >
             New Password
           </label>
@@ -491,12 +491,12 @@ export function AdminForgotPasswordFlow() {
               type={showPassword ? "text" : "password"}
               autoComplete="new-password"
               {...resetForm.register("newPassword")}
-              className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-900"
+              className="w-full rounded-md border border-input bg-card px-3 py-2 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground/80"
               aria-label={showPassword ? "Hide password" : "Show password"}
               tabIndex={-1}
             >
@@ -508,7 +508,7 @@ export function AdminForgotPasswordFlow() {
             </button>
           </div>
           {resetForm.formState.errors.newPassword && (
-            <p className="mt-1 text-xs text-red-600">
+            <p className="mt-1 text-xs text-destructive">
               {resetForm.formState.errors.newPassword.message}
             </p>
           )}
@@ -517,7 +517,7 @@ export function AdminForgotPasswordFlow() {
         <div>
           <label
             htmlFor="fp-confirm-password"
-            className="text-xs font-semibold uppercase tracking-wide text-neutral-500"
+            className="text-xs font-semibold uppercase tracking-wide text-muted-foreground"
           >
             Confirm Password
           </label>
@@ -526,10 +526,10 @@ export function AdminForgotPasswordFlow() {
             type={showPassword ? "text" : "password"}
             autoComplete="new-password"
             {...resetForm.register("confirmPassword")}
-            className="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-900"
+            className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           />
           {resetForm.formState.errors.confirmPassword && (
-            <p className="mt-1 text-xs text-red-600">
+            <p className="mt-1 text-xs text-destructive">
               {resetForm.formState.errors.confirmPassword.message}
             </p>
           )}
@@ -539,7 +539,7 @@ export function AdminForgotPasswordFlow() {
           type="submit"
           size="lg"
           disabled={isSubmitting}
-          className="w-full bg-neutral-900 text-white hover:bg-neutral-800"
+          className="w-full bg-foreground text-background hover:bg-foreground/90"
         >
           {isSubmitting ? (
             <>
@@ -558,20 +558,20 @@ export function AdminForgotPasswordFlow() {
   return (
     <div className="space-y-4 text-center">
       <CheckCircle2
-        className="mx-auto h-10 w-10 text-green-600"
+        className="mx-auto h-10 w-10 text-success"
         aria-hidden="true"
       />
-      <p className="text-sm font-semibold text-neutral-900">
+      <p className="text-sm font-semibold text-foreground">
         Password reset successfully
       </p>
-      <p className="text-sm text-neutral-500">
+      <p className="text-sm text-muted-foreground">
         You can now log in with your new password.
       </p>
       <Button
         type="button"
         onClick={() => router.push("/admin/login")}
         size="lg"
-        className="w-full bg-neutral-900 text-white hover:bg-neutral-800"
+        className="w-full bg-foreground text-background hover:bg-foreground/90"
       >
         Go to Login
       </Button>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,7 +20,8 @@ import { createProduct } from '@/lib/api/products';
 import { getAdminCategories } from '@/lib/api/categories';
 import { getAdminBrands } from '@/lib/api/brands';
 import { ApiError } from '@/lib/api/client';
-import { productFormSchema, serializeVariantsForApi, type ProductFormValues } from '@/lib/validators/adminProduct';
+import { makeProductFormSchema, serializeVariantsForApi, type ProductFormValues } from '@/lib/validators/adminProduct';
+import { useAdminAuthStore } from '@/store/adminAuthStore';
 import { FABRIC_TYPES, PIECE_COUNTS } from '@/lib/constants';
 import type { Category, Brand } from '@/types';
 
@@ -29,6 +30,8 @@ export default function NewProductPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [generalImages, setGeneralImages] = useState<File[]>([]);
+  const isOwner = useAdminAuthStore((s) => s.admin?.role === 'admin');
+  const resolver = useMemo(() => zodResolver(makeProductFormSchema({ isOwner })), [isOwner]);
 
   const {
     register,
@@ -36,7 +39,7 @@ export default function NewProductPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema),
+    resolver,
     defaultValues: {
       name: '',
       description: '',
@@ -47,7 +50,7 @@ export default function NewProductPage() {
       isCustomStitchingAvailable: false,
       discountPercentage: 0,
       isActive: true,
-      variants: [{ color: '', size: 'M', fabricStatus: 'stitched', price: 0, comparePrice: '', stock: 0 }],
+      variants: [{ color: '', size: 'M', fabricStatus: 'stitched', price: 0, comparePrice: '', costPrice: '', stock: 0 }],
     },
   });
 
@@ -93,14 +96,14 @@ export default function NewProductPage() {
 
   return (
     <div className="mx-auto max-w-4xl">
-      <Link href="/admin/products" className="mb-4 inline-flex items-center gap-1 text-xs font-medium text-neutral-500 hover:text-neutral-900">
+      <Link href="/admin/products" className="mb-4 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground">
         <ArrowLeft className="h-3.5 w-3.5" /> Back to Products
       </Link>
       <AdminPageHeader title="Add Product" description="General info and variants first — per-variant photos come after saving." />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <section className="rounded-lg border border-neutral-200 bg-white p-6">
-          <h3 className="mb-4 text-sm font-semibold text-neutral-900">General Information</h3>
+        <section className="rounded-lg border border-border bg-card p-6">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">General Information</h3>
           <div className="space-y-4">
             <div>
               <Label htmlFor="name">Product Name</Label>
@@ -158,17 +161,17 @@ export default function NewProductPage() {
               <div>
                 <Label htmlFor="discountPercentage">Discount % (0 = no discount)</Label>
                 <Input id="discountPercentage" type="number" min="0" max="100" {...register('discountPercentage')} invalid={!!errors.discountPercentage} />
-                <p className="mt-1 text-[11px] text-neutral-400">30 or higher shows up in the storefront&apos;s 30% OFF filter.</p>
+                <p className="mt-1 text-[11px] text-muted-foreground">30 or higher shows up in the storefront&apos;s 30% OFF filter.</p>
               </div>
             </div>
 
-            <div className="flex items-center justify-between rounded-md border border-neutral-200 px-3 py-2.5">
-              <span className="text-sm text-neutral-700">Custom stitching available for this product</span>
+            <div className="flex items-center justify-between rounded-md border border-border px-3 py-2.5">
+              <span className="text-sm text-foreground/80">Custom stitching available for this product</span>
               <Switch {...register('isCustomStitchingAvailable')} />
             </div>
 
-            <div className="flex items-center justify-between rounded-md border border-neutral-200 px-3 py-2.5">
-              <span className="text-sm text-neutral-700">Active (visible on storefront)</span>
+            <div className="flex items-center justify-between rounded-md border border-border px-3 py-2.5">
+              <span className="text-sm text-foreground/80">Active (visible on storefront)</span>
               {/* No explicit defaultChecked needed — useForm's defaultValues.isActive above
                   already sets the initial checked state via RHF's uncontrolled ref binding. */}
               <Switch {...register('isActive')} />
@@ -176,15 +179,15 @@ export default function NewProductPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-neutral-200 bg-white p-6">
-          <h3 className="mb-4 text-sm font-semibold text-neutral-900">General Gallery</h3>
+        <section className="rounded-lg border border-border bg-card p-6">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">General Gallery</h3>
           <MultiImagePicker label="Product Images (up to 8)" maxFiles={8} files={generalImages} onChange={setGeneralImages} />
         </section>
 
-        <section className="rounded-lg border border-neutral-200 bg-white p-6">
-          <h3 className="mb-1 text-sm font-semibold text-neutral-900">Variants</h3>
-          <p className="mb-4 text-xs text-neutral-500">Each color/size/type combination needs its own price and stock.</p>
-          <VariantEditor control={control} register={register} errors={errors} />
+        <section className="rounded-lg border border-border bg-card p-6">
+          <h3 className="mb-1 text-sm font-semibold text-foreground">Variants</h3>
+          <p className="mb-4 text-xs text-muted-foreground">Each color/size/type combination needs its own price and stock.</p>
+          <VariantEditor control={control} register={register} errors={errors} isOwner={isOwner} />
         </section>
 
         <div className="flex justify-end gap-3">

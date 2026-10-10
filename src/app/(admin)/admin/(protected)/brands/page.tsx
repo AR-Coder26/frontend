@@ -81,9 +81,9 @@ export default function AdminBrandsPage() {
       />
 
       {isLoading ? (
-        <div className="py-16 text-center text-sm text-neutral-500">Loading brands…</div>
+        <div className="py-16 text-center text-sm text-muted-foreground">Loading brands…</div>
       ) : brands.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-neutral-300 py-16 text-center text-sm text-neutral-500">
+        <div className="rounded-lg border border-dashed border-input py-16 text-center text-sm text-muted-foreground">
           No brands yet. Add your first one to get started.
         </div>
       ) : (
@@ -101,16 +101,16 @@ export default function AdminBrandsPage() {
             {brands.map((brand) => (
               <TableRow key={brand._id}>
                 <TableCell label="Logo">
-                  <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-neutral-100">
+                  <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-muted">
                     {brand.logo?.url ? (
                       <Image src={brand.logo.url} alt={brand.name} width={40} height={40} className="h-full w-full object-cover" />
                     ) : (
-                      <ImageIcon className="h-4 w-4 text-neutral-300" />
+                      <ImageIcon className="h-4 w-4 text-muted-foreground/60" />
                     )}
                   </div>
                 </TableCell>
-                <TableCell label="Name" className="font-medium text-neutral-900">{brand.name}</TableCell>
-                <TableCell label="Slug" className="text-neutral-500">{brand.slug}</TableCell>
+                <TableCell label="Name" className="font-medium text-foreground">{brand.name}</TableCell>
+                <TableCell label="Slug" className="text-muted-foreground">{brand.slug}</TableCell>
                 <TableCell label="Status">
                   <Badge variant={brand.isActive ? 'success' : 'outline'}>{brand.isActive ? 'Active' : 'Inactive'}</Badge>
                 </TableCell>
@@ -122,7 +122,7 @@ export default function AdminBrandsPage() {
                         setEditingBrand(brand);
                         setDialogOpen(true);
                       }}
-                      className="rounded-md p-1.5 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
+                      className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                       aria-label="Edit brand"
                     >
                       <Pencil className="h-4 w-4" />
@@ -130,7 +130,7 @@ export default function AdminBrandsPage() {
                     <button
                       type="button"
                       onClick={() => setDeleteTarget(brand)}
-                      className="rounded-md p-1.5 text-neutral-500 hover:bg-destructive/10 hover:text-destructive"
+                      className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                       aria-label="Delete brand"
                     >
                       <Trash2 className="h-4 w-4" />

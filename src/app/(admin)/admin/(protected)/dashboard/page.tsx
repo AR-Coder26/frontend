@@ -87,7 +87,7 @@ export default function AdminDashboardPage() {
       />
 
       {isLoading ? (
-        <div className="py-16 text-center text-sm text-neutral-500">Loading dashboard…</div>
+        <div className="py-16 text-center text-sm text-muted-foreground">Loading dashboard…</div>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -102,31 +102,31 @@ export default function AdminDashboardPage() {
             />
           </div>
 
-          <div className="mt-8 rounded-lg border border-neutral-200 bg-white">
-            <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4">
-              <h3 className="text-sm font-semibold text-neutral-900">Recent Orders</h3>
-              <Link href="/admin/orders" className="flex items-center gap-1 text-xs font-medium text-neutral-500 hover:text-neutral-900">
+          <div className="mt-8 rounded-lg border border-border bg-card">
+            <div className="flex items-center justify-between border-b border-border px-5 py-4">
+              <h3 className="text-sm font-semibold text-foreground">Recent Orders</h3>
+              <Link href="/admin/orders" className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground">
                 View all <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
             {recentOrders.length === 0 ? (
-              <p className="px-5 py-8 text-center text-sm text-neutral-400">No orders yet.</p>
+              <p className="px-5 py-8 text-center text-sm text-muted-foreground">No orders yet.</p>
             ) : (
-              <ul className="divide-y divide-neutral-100">
+              <ul className="divide-y divide-border">
                 {recentOrders.map((order) => (
                   <li key={order._id}>
                     <Link
                       href={`/admin/orders/${order._id}`}
-                      className="flex flex-col gap-1.5 px-4 py-3.5 hover:bg-neutral-50 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5"
+                      className="flex flex-col gap-1.5 px-4 py-3.5 hover:bg-muted/50 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5"
                     >
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-medium text-neutral-900">{order.orderNumber}</p>
-                        <p className="truncate text-xs text-neutral-500">
+                        <p className="truncate text-sm font-medium text-foreground">{order.orderNumber}</p>
+                        <p className="truncate text-xs text-muted-foreground">
                           {order.customer.name} &middot; {order.customer.phone}
                         </p>
                       </div>
                       <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
-                        <span className="text-sm font-medium text-neutral-900">{formatPKR(order.pricing.totalAmount)}</span>
+                        <span className="text-sm font-medium text-foreground">{formatPKR(order.pricing.totalAmount)}</span>
                         <OrderStatusBadge status={order.orderStatus} />
                       </div>
                     </Link>

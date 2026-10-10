@@ -121,7 +121,7 @@ export default function AdminCustomersPage() {
         description={`${customers.length} unique customer${customers.length === 1 ? '' : 's'}, derived from ${orders.length} order${orders.length === 1 ? '' : 's'}.`}
       />
 
-      <div className="mb-4 flex items-start gap-2 rounded-md border border-blue-200 bg-blue-50 px-3 py-2.5 text-xs text-blue-800">
+      <div className="mb-4 flex items-start gap-2 rounded-md border border-border bg-secondary px-3 py-2.5 text-xs text-foreground">
         <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         <p>
           This list is built from order history, not a separate customer directory — guest checkout is fully
@@ -132,7 +132,7 @@ export default function AdminCustomersPage() {
 
       <div className="mb-4">
         <div className="relative max-w-sm">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search name, phone, or email…"
             value={search}
@@ -143,9 +143,9 @@ export default function AdminCustomersPage() {
       </div>
 
       {isLoading ? (
-        <div className="py-16 text-center text-sm text-neutral-500">Loading customers…</div>
+        <div className="py-16 text-center text-sm text-muted-foreground">Loading customers…</div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-neutral-300 py-16 text-center text-sm text-neutral-500">
+        <div className="rounded-lg border border-dashed border-input py-16 text-center text-sm text-muted-foreground">
           {customers.length === 0 ? 'No orders have been placed yet.' : 'No customers match your search.'}
         </div>
       ) : (
@@ -164,33 +164,33 @@ export default function AdminCustomersPage() {
           <TableBody>
             {filtered.map((customer) => (
               <TableRow key={customer.phone}>
-                <TableCell label="Name" className="font-medium text-neutral-900">{customer.name}</TableCell>
+                <TableCell label="Name" className="font-medium text-foreground">{customer.name}</TableCell>
                 <TableCell label="Contact">
-                  <p className="text-neutral-700">{customer.phone}</p>
-                  {customer.email && <p className="text-xs text-neutral-400">{customer.email}</p>}
+                  <p className="text-foreground/80">{customer.phone}</p>
+                  {customer.email && <p className="text-xs text-muted-foreground">{customer.email}</p>}
                 </TableCell>
                 <TableCell label="Account">
                   <Badge variant={customer.hasAccount ? 'success' : 'outline'}>
                     {customer.hasAccount ? 'Registered' : 'Guest'}
                   </Badge>
                 </TableCell>
-                <TableCell label="Orders" className="text-neutral-700">{customer.orderCount}</TableCell>
-                <TableCell label="Total Spent" className="font-medium text-neutral-900">{formatPKR(customer.totalSpent)}</TableCell>
-                <TableCell label="Last Order" className="text-neutral-500">{format(new Date(customer.lastOrderAt), 'd MMM yyyy')}</TableCell>
+                <TableCell label="Orders" className="text-foreground/80">{customer.orderCount}</TableCell>
+                <TableCell label="Total Spent" className="font-medium text-foreground">{formatPKR(customer.totalSpent)}</TableCell>
+                <TableCell label="Last Order" className="text-muted-foreground">{format(new Date(customer.lastOrderAt), 'd MMM yyyy')}</TableCell>
                 <TableCell label="" className="text-right">
                   <div className="flex justify-end gap-3">
                     <a
                       href={`https://wa.me/${customer.whatsappNumber.replace(/[^0-9]/g, '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-xs font-medium text-emerald-700 hover:underline"
+                      className="flex items-center gap-1 text-xs font-medium text-success hover:underline"
                       aria-label="Message on WhatsApp"
                     >
                       <MessageCircle className="h-3.5 w-3.5" />
                     </a>
                     <Link
                       href={`/admin/orders?search=${encodeURIComponent(customer.phone)}`}
-                      className="text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:underline"
+                      className="text-xs font-medium text-muted-foreground hover:text-foreground hover:underline"
                     >
                       View Orders
                     </Link>

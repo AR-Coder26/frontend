@@ -50,17 +50,17 @@ export function SingleImagePicker({ label, existingImage, onChange }: SingleImag
 
   return (
     <div>
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-neutral-500">{label}</span>
+      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</span>
       <div className="flex items-center gap-4">
-        <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-md border border-dashed border-neutral-300 bg-neutral-50">
+        <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-md border border-dashed border-input bg-muted/50">
           {displayUrl ? (
             <Image src={displayUrl} alt={label} width={96} height={96} className="h-full w-full object-cover" />
           ) : (
-            <ImagePlus className="h-6 w-6 text-neutral-300" />
+            <ImagePlus className="h-6 w-6 text-muted-foreground/60" />
           )}
         </div>
         <div className="space-y-2">
-          <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-50">
+          <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-input bg-card px-3 py-1.5 text-xs font-medium text-foreground/80 hover:bg-muted/50">
             <ImagePlus className="h-3.5 w-3.5" />
             {existingImage || pendingFile ? 'Replace image' : 'Choose image'}
             <input ref={inputRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={handlePick} className="hidden" />
@@ -69,7 +69,7 @@ export function SingleImagePicker({ label, existingImage, onChange }: SingleImag
             <button
               type="button"
               onClick={handleClear}
-              className="flex items-center gap-1 text-xs text-neutral-500 hover:text-destructive"
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive"
             >
               <X className="h-3 w-3" /> Cancel new selection
             </button>

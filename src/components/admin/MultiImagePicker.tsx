@@ -41,12 +41,12 @@ export function MultiImagePicker({ label, maxFiles, files, onChange }: MultiImag
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">{label}</span>
-        <span className="text-xs text-neutral-400">{files.length}/{maxFiles}</span>
+        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</span>
+        <span className="text-xs text-muted-foreground">{files.length}/{maxFiles}</span>
       </div>
       <div className="flex flex-wrap gap-3">
         {files.map((file, i) => (
-          <div key={`${file.name}-${i}`} className="relative h-20 w-20 overflow-hidden rounded-md border border-neutral-200">
+          <div key={`${file.name}-${i}`} className="relative h-20 w-20 overflow-hidden rounded-md border border-border">
             {previewUrls[i] && (
               <Image src={previewUrls[i]} alt={file.name} width={80} height={80} className="h-full w-full object-cover" />
             )}
@@ -61,7 +61,7 @@ export function MultiImagePicker({ label, maxFiles, files, onChange }: MultiImag
           </div>
         ))}
         {remainingSlots > 0 && (
-          <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-md border border-dashed border-neutral-300 text-neutral-400 hover:border-neutral-400 hover:text-neutral-600">
+          <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-md border border-dashed border-input text-muted-foreground hover:border-foreground/40 hover:text-muted-foreground">
             <ImagePlus className="h-5 w-5" />
             <span className="text-[10px]">Add</span>
             <input

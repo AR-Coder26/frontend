@@ -32,7 +32,7 @@ export function RequireAdminAuth({ children }: RequireAdminAuthProps) {
   }, [status, pathname, router]);
 
   if (status === 'idle' || status === 'loading') {
-    return <div className="py-16 text-center text-sm text-neutral-500">Loading…</div>;
+    return <div className="py-16 text-center text-sm text-muted-foreground">Loading…</div>;
   }
 
   if (status === 'unauthenticated') {

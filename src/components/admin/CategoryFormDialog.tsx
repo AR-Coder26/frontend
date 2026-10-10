@@ -1,3 +1,4 @@
+// src/components/admin/CategoryFormDialog.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -94,7 +95,7 @@ export function CategoryFormDialog({ open, onOpenChange, category, onSaved }: Ca
           <div>
             <Label htmlFor="displayOrder">Display Order</Label>
             <Input id="displayOrder" type="number" step="1" {...register('displayOrder')} invalid={!!errors.displayOrder} />
-            <p className="mt-1 text-[11px] text-neutral-400">Lower numbers show first on the storefront.</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">Lower numbers show first on the storefront.</p>
           </div>
 
           <Controller
@@ -102,8 +103,8 @@ export function CategoryFormDialog({ open, onOpenChange, category, onSaved }: Ca
             name="isActive"
             render={({ field }) =>
               category ? (
-                <div className="flex items-center justify-between rounded-md border border-neutral-200 px-3 py-2.5">
-                  <span className="text-sm text-neutral-700">Active (visible on storefront)</span>
+                <div className="flex items-center justify-between rounded-md border border-border px-3 py-2.5">
+                  <span className="text-sm text-foreground/80">Active (visible on storefront)</span>
                   <Switch checked={field.value} onChange={(e) => field.onChange(e.target.checked)} />
                 </div>
               ) : (

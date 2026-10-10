@@ -1,3 +1,4 @@
+// src/components/layout/HeaderNav.tsx
 'use client';
 
 import { useState } from 'react';
@@ -10,6 +11,7 @@ import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useHasMounted } from '@/hooks/useHasMounted';
 import type { Category } from '@/types';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { AccountMenu } from './AccountMenu';
 import { OverflowNav } from './OverflowNav';
 import { Heart, Menu, ShoppingBag } from 'lucide-react';
@@ -54,6 +56,9 @@ export function HeaderNav({ categories }: HeaderNavProps) {
         <OverflowNav links={categoryLinks} pinnedLinks={pinnedLinks} aria-label="Shop by category" />
 
         <div className="flex shrink-0 items-center gap-1">
+          {/* Icon toggle from sm up; below sm the header is full, so the choice lives in the menu drawer. */}
+          <ThemeToggle variant="icon" className="hidden sm:inline-flex" />
+
           <AccountMenu />
 
           <Button variant="ghost" size="icon" asChild className="relative">
@@ -117,6 +122,12 @@ export function HeaderNav({ categories }: HeaderNavProps) {
                   Track your order
                 </Link>
               </nav>
+              <div className="mt-6 border-t border-border pt-4">
+                <p className="mb-2 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Appearance
+                </p>
+                <ThemeToggle variant="segmented" />
+              </div>
             </SheetContent>
           </Sheet>
         </div>

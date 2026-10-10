@@ -1,3 +1,4 @@
+// src/app/(admin)/admin/(protected)/orders/page.tsx
 'use client';
 
 import { useEffect, useState, Suspense } from 'react';
@@ -26,7 +27,7 @@ const PAGE_LIMIT = 20;
  *  content lives in OrdersListContent below; this default export just supplies the boundary. */
 export default function AdminOrdersPage() {
   return (
-    <Suspense fallback={<div className="py-16 text-center text-sm text-neutral-500">Loading orders…</div>}>
+    <Suspense fallback={<div className="py-16 text-center text-sm text-muted-foreground">Loading orders…</div>}>
       <OrdersListContent />
     </Suspense>
   );
@@ -47,6 +48,7 @@ function OrdersListContent() {
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [search, setSearch] = useState(initialSearch);
   const [statusFilter, setStatusFilter] = useState<OrderStatus | ''>('');
+  const [showArchived, setShowArchived] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -57,6 +59,7 @@ function OrdersListContent() {
       limit: PAGE_LIMIT,
       search: search || undefined,
       status: statusFilter || undefined,
+      archived: showArchived || undefined,
     })
       .then((result) => {
         if (cancelled) return;
@@ -75,7 +78,7 @@ function OrdersListContent() {
     return () => {
       cancelled = true;
     };
-  }, [page, search, statusFilter]);
+  }, [page, search, statusFilter, showArchived]);
 
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -98,7 +101,14 @@ function OrdersListContent() {
 
   return (
     <div>
-      <AdminPageHeader title="Orders" description={`${total} order${total === 1 ? '' : 's'} total.`} />
+      <AdminPageHeader
+        title={showArchived ? 'Archived orders' : 'Orders'}
+        description={
+          showArchived
+            ? `${total} archived cancelled order${total === 1 ? '' : 's'}. Each is deleted automatically one month after it was archived.`
+            : `${total} order${total === 1 ? '' : 's'} total.`
+        }
+      />
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <form onSubmit={handleSearchSubmit} className="flex min-w-[220px] flex-1 items-center gap-2">
@@ -126,12 +136,25 @@ function OrdersListContent() {
             <option key={s} value={s}>{ORDER_STATUS_LABELS[s]}</option>
           ))}
         </Select>
+
+        <Select
+          aria-label="Order list"
+          value={showArchived ? 'archived' : 'active'}
+          onChange={(e) => {
+            setPage(1);
+            setShowArchived(e.target.value === 'archived');
+          }}
+          className="h-9 w-auto min-w-[150px]"
+        >
+          <option value="active">Active orders</option>
+          <option value="archived">Archived</option>
+        </Select>
       </div>
 
       {isLoading ? (
-        <div className="py-16 text-center text-sm text-neutral-500">Loading orders…</div>
+        <div className="py-16 text-center text-sm text-muted-foreground">Loading orders…</div>
       ) : orders.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-neutral-300 py-16 text-center text-sm text-neutral-500">
+        <div className="rounded-lg border border-dashed border-input py-16 text-center text-sm text-muted-foreground">
           No orders match these filters.
         </div>
       ) : (
@@ -150,20 +173,20 @@ function OrdersListContent() {
             </TableHeader>
             <TableBody>
               {orders.map((order) => (
-                <TableRow key={order._id} className={!order.isSeenByAdmin ? 'bg-amber-50/60' : undefined}>
+                <TableRow key={order._id} className={!order.isSeenByAdmin ? 'bg-warning/10' : undefined}>
                   <TableCell label="Order #">
-                    <Link href={`/admin/orders/${order._id}`} className="font-medium text-neutral-900 hover:underline">
-                      {!order.isSeenByAdmin && <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-amber-500" aria-label="Unseen" />}
+                    <Link href={`/admin/orders/${order._id}`} className="font-medium text-foreground hover:underline">
+                      {!order.isSeenByAdmin && <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-warning" aria-label="Unseen" />}
                       {order.orderNumber}
                     </Link>
                   </TableCell>
                   <TableCell label="Customer">
-                    <p className="text-neutral-900">{order.customer.name}</p>
-                    <p className="text-xs text-neutral-500">{order.customer.phone}</p>
+                    <p className="text-foreground">{order.customer.name}</p>
+                    <p className="text-xs text-muted-foreground">{order.customer.phone}</p>
                   </TableCell>
-                  <TableCell label="Date" className="text-neutral-500">{format(new Date(order.createdAt), 'd MMM yyyy, h:mm a')}</TableCell>
-                  <TableCell label="Payment" className="text-neutral-500">{order.paymentMethod}</TableCell>
-                  <TableCell label="Total" className="font-medium text-neutral-900">{formatPKR(order.pricing.totalAmount)}</TableCell>
+                  <TableCell label="Date" className="text-muted-foreground">{format(new Date(order.createdAt), 'd MMM yyyy, h:mm a')}</TableCell>
+                  <TableCell label="Payment" className="text-muted-foreground">{order.paymentMethod}</TableCell>
+                  <TableCell label="Total" className="font-medium text-foreground">{formatPKR(order.pricing.totalAmount)}</TableCell>
                   <TableCell label="Status">
                     <OrderStatusBadge status={order.orderStatus} />
                   </TableCell>
@@ -173,7 +196,7 @@ function OrdersListContent() {
                         <button
                           type="button"
                           onClick={(e) => handleMarkSeen(order, e)}
-                          className="rounded-md p-1.5 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
+                          className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                           aria-label="Mark as seen"
                           title="Mark as seen"
                         >
@@ -182,7 +205,7 @@ function OrdersListContent() {
                       )}
                       <Link
                         href={`/admin/orders/${order._id}`}
-                        className="rounded-md border border-neutral-300 px-2.5 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-100"
+                        className="rounded-md border border-input px-2.5 py-1 text-xs font-medium text-foreground/80 hover:bg-muted"
                       >
                         View
                       </Link>

@@ -14,6 +14,7 @@ import { SocialIcon } from '@/lib/socialIcons';
 import { getAdminSocialLinks, deleteSocialMediaLink, reorderSocialMediaLinks } from '@/lib/api/socialLinks';
 import { ApiError } from '@/lib/api/client';
 import type { SocialMediaLink } from '@/types';
+import { OwnerOnly } from '@/components/auth/OwnerOnly';
 
 // Mirrors backend/src/models/SocialMediaLink.model.js's MAX_ACTIVE_SOCIAL_LINKS. Kept as a
 // local constant (not fetched from the API) since it's a fixed product decision tied to the
@@ -22,7 +23,7 @@ import type { SocialMediaLink } from '@/types';
 // dialog's client-side hint.
 const MAX_ACTIVE_LINKS = 6;
 
-export default function AdminSocialLinksPage() {
+function SocialLinksPage() {
   const [links, setLinks] = useState<SocialMediaLink[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -129,7 +130,7 @@ export default function AdminSocialLinksPage() {
       {/* Requirement 2e: a visually clear warning once the 6-link threshold is reached. */}
       <div
         className={`mb-4 flex flex-wrap items-center justify-between gap-2 rounded-md border px-4 py-2.5 text-sm ${
-          isAtCap ? 'border-amber-300 bg-amber-50 text-amber-800' : 'border-neutral-200 bg-neutral-50 text-neutral-600'
+          isAtCap ? 'border-warning/50 bg-warning/10 text-foreground' : 'border-border bg-muted/50 text-muted-foreground'
         }`}
       >
         <span>
@@ -139,9 +140,9 @@ export default function AdminSocialLinksPage() {
       </div>
 
       {isLoading ? (
-        <div className="py-16 text-center text-sm text-neutral-500">Loading social links…</div>
+        <div className="py-16 text-center text-sm text-muted-foreground">Loading social links…</div>
       ) : links.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-neutral-300 py-16 text-center text-sm text-neutral-500">
+        <div className="rounded-lg border border-dashed border-input py-16 text-center text-sm text-muted-foreground">
           No social links yet. Add your first one to get started.
         </div>
       ) : (
@@ -165,7 +166,7 @@ export default function AdminSocialLinksPage() {
                       type="button"
                       onClick={() => handleMove(index, -1)}
                       disabled={index === 0 || reorderingId !== null}
-                      className="rounded p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-900 disabled:cursor-not-allowed disabled:opacity-30"
+                      className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
                       aria-label="Move up"
                     >
                       <ArrowUp className="h-3.5 w-3.5" />
@@ -174,7 +175,7 @@ export default function AdminSocialLinksPage() {
                       type="button"
                       onClick={() => handleMove(index, 1)}
                       disabled={index === links.length - 1 || reorderingId !== null}
-                      className="rounded p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-900 disabled:cursor-not-allowed disabled:opacity-30"
+                      className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
                       aria-label="Move down"
                     >
                       <ArrowDown className="h-3.5 w-3.5" />
@@ -182,7 +183,7 @@ export default function AdminSocialLinksPage() {
                   </div>
                 </TableCell>
                 <TableCell label="Icon">
-                  <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-md bg-neutral-100 text-neutral-600">
+                  <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-md bg-muted text-muted-foreground">
                     {link.logo?.url ? (
                       <Image
                         src={link.logo.url}
@@ -196,8 +197,8 @@ export default function AdminSocialLinksPage() {
                     )}
                   </div>
                 </TableCell>
-                <TableCell label="Platform" className="font-medium text-neutral-900">{link.platformName}</TableCell>
-                <TableCell label="URL" className="max-w-[240px] truncate text-neutral-500">
+                <TableCell label="Platform" className="font-medium text-foreground">{link.platformName}</TableCell>
+                <TableCell label="URL" className="max-w-[240px] truncate text-muted-foreground">
                   <a href={link.targetUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
                     {link.targetUrl}
                   </a>
@@ -213,7 +214,7 @@ export default function AdminSocialLinksPage() {
                         setEditingLink(link);
                         setDialogOpen(true);
                       }}
-                      className="rounded-md p-1.5 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
+                      className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                       aria-label="Edit social link"
                     >
                       <Pencil className="h-4 w-4" />
@@ -221,7 +222,7 @@ export default function AdminSocialLinksPage() {
                     <button
                       type="button"
                       onClick={() => setDeleteTarget(link)}
-                      className="rounded-md p-1.5 text-neutral-500 hover:bg-destructive/10 hover:text-destructive"
+                      className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                       aria-label="Delete social link"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -253,5 +254,12 @@ export default function AdminSocialLinksPage() {
         onConfirm={handleDelete}
       />
     </div>
+  );
+}
+export default function AdminSocialLinksPage() {
+  return (
+    <OwnerOnly>
+      <SocialLinksPage />
+    </OwnerOnly>
   );
 }

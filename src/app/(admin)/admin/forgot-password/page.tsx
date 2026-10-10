@@ -1,3 +1,4 @@
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { AdminForgotPasswordFlow } from '@/components/auth/AdminForgotPasswordFlow';
 
 /**
@@ -9,11 +10,14 @@ import { AdminForgotPasswordFlow } from '@/components/auth/AdminForgotPasswordFl
  */
 export default function AdminForgotPasswordPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-100 px-4">
-      <div className="w-full max-w-sm rounded-lg border border-neutral-200 bg-white p-8 shadow-sm">
+    <div className="relative flex min-h-screen items-center justify-center bg-muted px-4">
+      <div className="absolute right-4 top-4">
+        <ThemeToggle variant="icon" />
+      </div>
+      <div className="w-full max-w-sm rounded-lg border border-border bg-card p-8 shadow-sm">
         <div className="mb-6 text-center">
-          <h1 className="text-xl font-bold tracking-tight text-neutral-900">Reset Admin Password</h1>
-          <p className="mt-1 text-sm text-neutral-500">Verify your identity to set a new password</p>
+          <h1 className="text-xl font-bold tracking-tight text-foreground">Reset Admin Password</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Verify your identity to set a new password</p>
         </div>
         <AdminForgotPasswordFlow />
       </div>

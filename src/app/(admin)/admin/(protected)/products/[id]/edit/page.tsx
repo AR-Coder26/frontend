@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -27,7 +27,8 @@ import {
 import { getAdminCategories } from '@/lib/api/categories';
 import { getAdminBrands } from '@/lib/api/brands';
 import { ApiError } from '@/lib/api/client';
-import { productFormSchema, serializeVariantsForApi, type ProductFormValues } from '@/lib/validators/adminProduct';
+import { makeProductFormSchema, serializeVariantsForApi, type ProductFormValues } from '@/lib/validators/adminProduct';
+import { useAdminAuthStore } from '@/store/adminAuthStore';
 import { FABRIC_TYPES, PIECE_COUNTS } from '@/lib/constants';
 import type { Category, Brand, Product, ImageAsset } from '@/types';
 
@@ -42,6 +43,8 @@ export default function EditProductPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const isOwner = useAdminAuthStore((s) => s.admin?.role === 'admin');
+  const resolver = useMemo(() => zodResolver(makeProductFormSchema({ isOwner })), [isOwner]);
 
   const {
     register,
@@ -49,7 +52,7 @@ export default function EditProductPage() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<ProductFormValues>({ resolver: zodResolver(productFormSchema) });
+  } = useForm<ProductFormValues>({ resolver });
 
   const applyProductToForm = useCallback(
     (p: Product) => {
@@ -70,6 +73,8 @@ export default function EditProductPage() {
           fabricStatus: v.fabricStatus,
           price: v.price,
           comparePrice: v.comparePrice ?? '',
+          // owners get the saved cost back; for staff it is absent, so the field starts blank
+          costPrice: v.costPrice ?? '',
           stock: v.stock,
         })),
       });
@@ -152,14 +157,14 @@ export default function EditProductPage() {
   }
 
   if (isLoading) {
-    return <div className="py-16 text-center text-sm text-neutral-500">Loading product…</div>;
+    return <div className="py-16 text-center text-sm text-muted-foreground">Loading product…</div>;
   }
 
   if (loadError || !product) {
     return (
-      <div className="py-16 text-center text-sm text-neutral-500">
+      <div className="py-16 text-center text-sm text-muted-foreground">
         <p>{loadError ?? 'Product not found.'}</p>
-        <Link href="/admin/products" className="mt-3 inline-block text-sm font-medium text-neutral-900 hover:underline">
+        <Link href="/admin/products" className="mt-3 inline-block text-sm font-medium text-foreground hover:underline">
           &larr; Back to Products
         </Link>
       </div>
@@ -172,7 +177,7 @@ export default function EditProductPage() {
 
   return (
     <div className="mx-auto max-w-4xl">
-      <Link href="/admin/products" className="mb-4 inline-flex items-center gap-1 text-xs font-medium text-neutral-500 hover:text-neutral-900">
+      <Link href="/admin/products" className="mb-4 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground">
         <ArrowLeft className="h-3.5 w-3.5" /> Back to Products
       </Link>
       <AdminPageHeader
@@ -186,8 +191,8 @@ export default function EditProductPage() {
       />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <section className="rounded-lg border border-neutral-200 bg-white p-6">
-          <h3 className="mb-4 text-sm font-semibold text-neutral-900">General Information</h3>
+        <section className="rounded-lg border border-border bg-card p-6">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">General Information</h3>
           <div className="space-y-4">
             <div>
               <Label htmlFor="name">Product Name</Label>
@@ -244,20 +249,20 @@ export default function EditProductPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between rounded-md border border-neutral-200 px-3 py-2.5">
-              <span className="text-sm text-neutral-700">Custom stitching available for this product</span>
+            <div className="flex items-center justify-between rounded-md border border-border px-3 py-2.5">
+              <span className="text-sm text-foreground/80">Custom stitching available for this product</span>
               <Switch {...register('isCustomStitchingAvailable')} />
             </div>
 
-            <div className="flex items-center justify-between rounded-md border border-neutral-200 px-3 py-2.5">
-              <span className="text-sm text-neutral-700">Active (visible on storefront)</span>
+            <div className="flex items-center justify-between rounded-md border border-border px-3 py-2.5">
+              <span className="text-sm text-foreground/80">Active (visible on storefront)</span>
               <Switch {...register('isActive')} />
             </div>
           </div>
         </section>
 
-        <section className="rounded-lg border border-neutral-200 bg-white p-6">
-          <h3 className="mb-4 text-sm font-semibold text-neutral-900">General Gallery</h3>
+        <section className="rounded-lg border border-border bg-card p-6">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">General Gallery</h3>
           <ProductImageManager
             label="Product Images (up to 8)"
             existingImages={product.images}
@@ -275,12 +280,13 @@ export default function EditProductPage() {
           />
         </section>
 
-        <section className="rounded-lg border border-neutral-200 bg-white p-6">
-          <h3 className="mb-1 text-sm font-semibold text-neutral-900">Variants</h3>
-          <p className="mb-4 text-xs text-neutral-500">
+        <section className="rounded-lg border border-border bg-card p-6">
+          <h3 className="mb-1 text-sm font-semibold text-foreground">Variants</h3>
+          <p className="mb-4 text-xs text-muted-foreground">
             Removing a variant and saving permanently deletes it and its photos — this cannot be undone.
           </p>
           <VariantEditor
+            isOwner={isOwner}
             control={control}
             register={register}
             errors={errors}

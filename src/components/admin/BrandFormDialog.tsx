@@ -80,8 +80,8 @@ export function BrandFormDialog({ open, onOpenChange, brand, onSaved }: BrandFor
             name="isActive"
             render={({ field }) =>
               brand ? (
-                <div className="flex items-center justify-between rounded-md border border-neutral-200 px-3 py-2.5">
-                  <span className="text-sm text-neutral-700">Active (visible on storefront)</span>
+                <div className="flex items-center justify-between rounded-md border border-border px-3 py-2.5">
+                  <span className="text-sm text-foreground/80">Active (visible on storefront)</span>
                   <Switch checked={field.value} onChange={(e) => field.onChange(e.target.checked)} />
                 </div>
               ) : (

@@ -56,21 +56,21 @@ export function ConfirmationProofUpload({ order, onVerified }: ConfirmationProof
   }
 
   return (
-    <div className="rounded-lg border border-neutral-200 bg-white p-5">
+    <div className="rounded-lg border border-border bg-card p-5">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-neutral-900">WhatsApp Confirmation Gate</h3>
+        <h3 className="text-sm font-semibold text-foreground">WhatsApp Confirmation Gate</h3>
         {order.firstMessageSent ? (
-          <span className="flex items-center gap-1 text-xs font-medium text-emerald-600">
+          <span className="flex items-center gap-1 text-xs font-medium text-success">
             <ShieldCheck className="h-3.5 w-3.5" /> Verified
           </span>
         ) : (
-          <span className="flex items-center gap-1 text-xs font-medium text-amber-600">
+          <span className="flex items-center gap-1 text-xs font-medium text-warning">
             <ShieldAlert className="h-3.5 w-3.5" /> Not yet verified
           </span>
         )}
       </div>
 
-      <p className="mb-4 text-xs text-neutral-500">
+      <p className="mb-4 text-xs text-muted-foreground">
         Send the order confirmation on WhatsApp, screenshot it, then upload it here. The order
         cannot move to <strong>Confirmed</strong> until this screenshot is verified.
       </p>
@@ -82,7 +82,7 @@ export function ConfirmationProofUpload({ order, onVerified }: ConfirmationProof
           </a>
         </Button>
 
-        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-neutral-900 px-3 py-2 text-xs font-medium text-white hover:bg-neutral-800">
+        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-xs font-medium text-background hover:bg-foreground/90">
           {isUploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
           {isUploading ? 'Verifying…' : order.firstMessageProof ? 'Re-upload screenshot' : 'Upload screenshot'}
           <input
@@ -98,13 +98,13 @@ export function ConfirmationProofUpload({ order, onVerified }: ConfirmationProof
 
       {order.firstMessageProof?.url && (
         <div className="mt-4">
-          <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-neutral-400">Uploaded proof</p>
+          <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Uploaded proof</p>
           <Image
             src={order.firstMessageProof.url}
             alt="WhatsApp confirmation screenshot"
             width={200}
             height={280}
-            className="rounded-md border border-neutral-200 object-cover"
+            className="rounded-md border border-border object-cover"
           />
         </div>
       )}

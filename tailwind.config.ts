@@ -6,8 +6,8 @@ import tailwindcssAnimate from 'tailwindcss-animate';
 // utility generator. Keeping the palette in ONE place (CSS variables) means a future theme
 // change (e.g. a seasonal sale accent) only ever needs edits in globals.css, never here.
 const config: Config = {
-  darkMode: ['class'], // not used yet (no dark mode in the design mandate) — kept so any
-  // shadcn component pulled in later via the CLI doesn't need a config rewrite to work.
+  darkMode: ['class'], // The `.dark` token set lives in globals.css; the class is put on <html> by
+  // the pre-paint script in lib/theme.ts and toggled by components/theme/ThemeProvider.tsx.
   content: ['./src/**/*.{ts,tsx,mdx}'],
   theme: {
     container: {
@@ -61,6 +61,14 @@ const config: Config = {
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
+        },
+        // Admin sidebar surface — dark in both themes, so it is NOT derived from background.
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          muted: 'hsl(var(--sidebar-muted))',
+          accent: 'hsl(var(--sidebar-accent))',
+          border: 'hsl(var(--sidebar-border))',
         },
         // Not part of default shadcn tokens — added because order/stock states need their
         // own semantic colors distinct from the maroon brand primary (see Order.model.js

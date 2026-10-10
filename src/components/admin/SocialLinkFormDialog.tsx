@@ -1,3 +1,4 @@
+// src/components/admin/SocialLinkFormDialog.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -142,7 +143,7 @@ export function SocialLinkFormDialog({
           <div>
             <Label htmlFor="iconName">Icon</Label>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-neutral-200 bg-neutral-50 text-neutral-700">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border bg-muted/50 text-foreground/80">
                 {watchedIconName && <SocialIcon name={watchedIconName} className="h-5 w-5" />}
               </div>
               <div className="flex-1">
@@ -156,7 +157,7 @@ export function SocialLinkFormDialog({
               </div>
             </div>
             {errors.iconName && <p className="mt-1 text-xs text-destructive">{errors.iconName.message}</p>}
-            <p className="mt-1 text-[11px] text-neutral-400">
+            <p className="mt-1 text-[11px] text-muted-foreground">
               Or upload a custom logo below — a custom logo always overrides this standard icon.
             </p>
           </div>
@@ -167,7 +168,7 @@ export function SocialLinkFormDialog({
               <button
                 type="button"
                 onClick={handleRemoveLogo}
-                className="mt-2 text-xs text-neutral-500 underline underline-offset-2 hover:text-destructive"
+                className="mt-2 text-xs text-muted-foreground underline underline-offset-2 hover:text-destructive"
               >
                 Remove custom logo (revert to standard icon)
               </button>
@@ -177,7 +178,7 @@ export function SocialLinkFormDialog({
           <div>
             <Label htmlFor="displayOrder">Display Order</Label>
             <Input id="displayOrder" type="number" step="1" {...register('displayOrder')} invalid={!!errors.displayOrder} />
-            <p className="mt-1 text-[11px] text-neutral-400">Lower numbers show first in the Footer.</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">Lower numbers show first in the Footer.</p>
           </div>
 
           <Controller
@@ -185,8 +186,8 @@ export function SocialLinkFormDialog({
             name="isActive"
             render={({ field }) => (
               <div>
-                <div className="flex items-center justify-between rounded-md border border-neutral-200 px-3 py-2.5">
-                  <span className="text-sm text-neutral-700">Active (visible in Footer)</span>
+                <div className="flex items-center justify-between rounded-md border border-border px-3 py-2.5">
+                  <span className="text-sm text-foreground/80">Active (visible in Footer)</span>
                   <Switch
                     checked={field.value}
                     disabled={!field.value && wouldExceedCapOnActivate}
@@ -194,7 +195,7 @@ export function SocialLinkFormDialog({
                   />
                 </div>
                 {wouldExceedCapOnActivate && (
-                  <p className="mt-1 text-xs text-amber-600">
+                  <p className="mt-1 text-xs text-warning">
                     {maxActiveLinks} active links already exist — turning this on will replace one only
                     after you deactivate another.
                   </p>

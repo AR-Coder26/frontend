@@ -83,9 +83,9 @@ export default function AdminCategoriesPage() {
       />
 
       {isLoading ? (
-        <div className="py-16 text-center text-sm text-neutral-500">Loading categories…</div>
+        <div className="py-16 text-center text-sm text-muted-foreground">Loading categories…</div>
       ) : categories.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-neutral-300 py-16 text-center text-sm text-neutral-500">
+        <div className="rounded-lg border border-dashed border-input py-16 text-center text-sm text-muted-foreground">
           No categories yet. Add your first one to get started.
         </div>
       ) : (
@@ -104,17 +104,17 @@ export default function AdminCategoriesPage() {
             {categories.map((category) => (
               <TableRow key={category._id}>
                 <TableCell label="Image">
-                  <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-neutral-100">
+                  <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-muted">
                     {category.image?.url ? (
                       <Image src={category.image.url} alt={category.name} width={40} height={40} className="h-full w-full object-cover" />
                     ) : (
-                      <ImageIcon className="h-4 w-4 text-neutral-300" />
+                      <ImageIcon className="h-4 w-4 text-muted-foreground/60" />
                     )}
                   </div>
                 </TableCell>
-                <TableCell label="Name" className="font-medium text-neutral-900">{category.name}</TableCell>
-                <TableCell label="Slug" className="text-neutral-500">{category.slug}</TableCell>
-                <TableCell label="Order" className="text-neutral-500">{category.displayOrder}</TableCell>
+                <TableCell label="Name" className="font-medium text-foreground">{category.name}</TableCell>
+                <TableCell label="Slug" className="text-muted-foreground">{category.slug}</TableCell>
+                <TableCell label="Order" className="text-muted-foreground">{category.displayOrder}</TableCell>
                 <TableCell label="Status">
                   <Badge variant={category.isActive ? 'success' : 'outline'}>
                     {category.isActive ? 'Active' : 'Inactive'}
@@ -128,7 +128,7 @@ export default function AdminCategoriesPage() {
                         setEditingCategory(category);
                         setDialogOpen(true);
                       }}
-                      className="rounded-md p-1.5 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
+                      className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                       aria-label="Edit category"
                     >
                       <Pencil className="h-4 w-4" />
@@ -136,7 +136,7 @@ export default function AdminCategoriesPage() {
                     <button
                       type="button"
                       onClick={() => setDeleteTarget(category)}
-                      className="rounded-md p-1.5 text-neutral-500 hover:bg-destructive/10 hover:text-destructive"
+                      className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                       aria-label="Delete category"
                     >
                       <Trash2 className="h-4 w-4" />

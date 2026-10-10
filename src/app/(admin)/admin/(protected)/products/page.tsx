@@ -173,9 +173,9 @@ export default function AdminProductsPage() {
       </div>
 
       {isLoading ? (
-        <div className="py-16 text-center text-sm text-neutral-500">Loading products…</div>
+        <div className="py-16 text-center text-sm text-muted-foreground">Loading products…</div>
       ) : products.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-neutral-300 py-16 text-center text-sm text-neutral-500">
+        <div className="rounded-lg border border-dashed border-input py-16 text-center text-sm text-muted-foreground">
           No products match these filters.
         </div>
       ) : (
@@ -199,19 +199,19 @@ export default function AdminProductsPage() {
                 return (
                   <TableRow key={product._id}>
                     <TableCell label="Image">
-                      <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-neutral-100">
+                      <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-muted">
                         {thumb?.url ? (
                           <Image src={thumb.url} alt={product.name} width={40} height={40} className="h-full w-full object-cover" />
                         ) : (
-                          <ImageIcon className="h-4 w-4 text-neutral-300" />
+                          <ImageIcon className="h-4 w-4 text-muted-foreground/60" />
                         )}
                       </div>
                     </TableCell>
-                    <TableCell label="Name" className="max-w-[220px] truncate font-medium text-neutral-900">{product.name}</TableCell>
-                    <TableCell label="Category" className="text-neutral-500">{product.category?.name ?? '—'}</TableCell>
+                    <TableCell label="Name" className="max-w-[220px] truncate font-medium text-foreground">{product.name}</TableCell>
+                    <TableCell label="Category" className="text-muted-foreground">{product.category?.name ?? '—'}</TableCell>
                     {/* brand is nullable at read time even though required at write time — see types/index.ts */}
-                    <TableCell label="Brand" className="text-neutral-500">{product.brand?.name ?? '—'}</TableCell>
-                    <TableCell label="Price" className="text-neutral-500">
+                    <TableCell label="Brand" className="text-muted-foreground">{product.brand?.name ?? '—'}</TableCell>
+                    <TableCell label="Price" className="text-muted-foreground">
                       {product.minPrice === product.maxPrice
                         ? formatPKR(product.minPrice)
                         : `${formatPKR(product.minPrice)} – ${formatPKR(product.maxPrice)}`}
@@ -222,7 +222,7 @@ export default function AdminProductsPage() {
                       ) : product.totalStock <= 5 ? (
                         <Badge variant="warning">{product.totalStock} left</Badge>
                       ) : (
-                        <span className="text-neutral-500">{product.totalStock}</span>
+                        <span className="text-muted-foreground">{product.totalStock}</span>
                       )}
                     </TableCell>
                     <TableCell label="Status">
@@ -234,7 +234,7 @@ export default function AdminProductsPage() {
                       <div className="flex justify-end gap-2">
                         <Link
                           href={`/admin/products/${product._id}/edit`}
-                          className="rounded-md p-1.5 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
+                          className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                           aria-label="Edit product"
                         >
                           <Pencil className="h-4 w-4" />
@@ -242,7 +242,7 @@ export default function AdminProductsPage() {
                         <button
                           type="button"
                           onClick={() => setDeleteTarget(product)}
-                          className="rounded-md p-1.5 text-neutral-500 hover:bg-destructive/10 hover:text-destructive"
+                          className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                           aria-label="Delete product"
                         >
                           <Trash2 className="h-4 w-4" />

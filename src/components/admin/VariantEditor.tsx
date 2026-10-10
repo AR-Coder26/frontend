@@ -25,6 +25,9 @@ interface VariantEditorProps {
    *  aren't part of the editable form state, they save immediately via their own endpoint. */
   variantImagesById?: Record<string, ImageAsset[]>;
   onVariantImagesUpdated?: (updatedProduct: Product) => void;
+  /** Owners see and edit saved costs. Staff never receive them: blank keeps the saved cost for an
+   *  existing variant, and a cost must be entered for every NEW variant. */
+  isOwner: boolean;
 }
 
 export function VariantEditor({
@@ -34,6 +37,7 @@ export function VariantEditor({
   productId,
   variantImagesById = {},
   onVariantImagesUpdated,
+  isOwner,
 }: VariantEditorProps) {
   const { fields, append, remove } = useFieldArray({ control, name: 'variants' });
   const [expandedImages, setExpandedImages] = useState<string | null>(null);
@@ -46,15 +50,15 @@ export function VariantEditor({
         const canManageImages = Boolean(productId && variantId);
 
         return (
-          <div key={field.id} className="rounded-lg border border-neutral-200 bg-neutral-50/50 p-4">
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <div key={field.id} className="rounded-lg border border-border bg-muted/30 p-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
               <div className="col-span-2 sm:col-span-1">
-                <label className="mb-1 block text-[11px] font-medium text-neutral-500">Color</label>
+                <label className="mb-1 block text-[11px] font-medium text-muted-foreground">Color</label>
                 <Input {...register(`variants.${index}.color`)} placeholder="Sky Blue" invalid={!!rowErrors?.color} />
                 {rowErrors?.color && <p className="mt-1 text-[11px] text-destructive">{rowErrors.color.message}</p>}
               </div>
               <div>
-                <label className="mb-1 block text-[11px] font-medium text-neutral-500">Size</label>
+                <label className="mb-1 block text-[11px] font-medium text-muted-foreground">Size</label>
                 <Select {...register(`variants.${index}.size`)} invalid={!!rowErrors?.size}>
                   <option value="">Select…</option>
                   {SIZES.map((s) => (
@@ -63,7 +67,7 @@ export function VariantEditor({
                 </Select>
               </div>
               <div>
-                <label className="mb-1 block text-[11px] font-medium text-neutral-500">Type</label>
+                <label className="mb-1 block text-[11px] font-medium text-muted-foreground">Type</label>
                 <Select {...register(`variants.${index}.fabricStatus`)} invalid={!!rowErrors?.fabricStatus}>
                   <option value="">Select…</option>
                   {FABRIC_STATUSES.map((s) => (
@@ -72,16 +76,33 @@ export function VariantEditor({
                 </Select>
               </div>
               <div>
-                <label className="mb-1 block text-[11px] font-medium text-neutral-500">Price (Rs.)</label>
+                <label className="mb-1 block text-[11px] font-medium text-muted-foreground">Price (Rs.)</label>
                 <Input type="number" step="1" min="0" {...register(`variants.${index}.price`)} invalid={!!rowErrors?.price} />
                 {rowErrors?.price && <p className="mt-1 text-[11px] text-destructive">{rowErrors.price.message}</p>}
               </div>
               <div>
-                <label className="mb-1 block text-[11px] font-medium text-neutral-500">Compare-at (optional)</label>
+                <label className="mb-1 block text-[11px] font-medium text-muted-foreground">Cost (Rs.)</label>
+                <Input
+                  type="number"
+                  step="1"
+                  min="0"
+                  inputMode="numeric"
+                  {...register(`variants.${index}.costPrice`)}
+                  invalid={!!rowErrors?.costPrice}
+                  placeholder={!isOwner && field._id ? 'Saved' : ''}
+                  aria-describedby={`cost-hint-${field.id}`}
+                />
+                {rowErrors?.costPrice && <p className="mt-1 text-[11px] text-destructive">{rowErrors.costPrice.message as string}</p>}
+                {!isOwner && field._id && !rowErrors?.costPrice && (
+                  <p id={`cost-hint-${field.id}`} className="mt-1 text-[11px] text-muted-foreground">Hidden. Blank keeps it.</p>
+                )}
+              </div>
+              <div>
+                <label className="mb-1 block text-[11px] font-medium text-muted-foreground">Compare-at (optional)</label>
                 <Input type="number" step="1" min="0" {...register(`variants.${index}.comparePrice`)} invalid={!!rowErrors?.comparePrice} />
               </div>
               <div>
-                <label className="mb-1 block text-[11px] font-medium text-neutral-500">Stock</label>
+                <label className="mb-1 block text-[11px] font-medium text-muted-foreground">Stock</label>
                 <Input type="number" step="1" min="0" {...register(`variants.${index}.stock`)} invalid={!!rowErrors?.stock} />
                 {rowErrors?.stock && <p className="mt-1 text-[11px] text-destructive">{rowErrors.stock.message}</p>}
               </div>
@@ -95,13 +116,13 @@ export function VariantEditor({
                 <button
                   type="button"
                   onClick={() => setExpandedImages(expandedImages === field.id ? null : field.id)}
-                  className="flex items-center gap-1 text-xs font-medium text-neutral-600 hover:text-neutral-900"
+                  className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
                 >
                   {expandedImages === field.id ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
                   Variant images ({(variantImagesById[variantId!] ?? []).filter((i) => i.url).length})
                 </button>
               ) : (
-                <span className="text-xs text-neutral-400">
+                <span className="text-xs text-muted-foreground">
                   {productId ? 'Save to add images for this new variant' : 'Images can be added after the product is created'}
                 </span>
               )}
@@ -115,7 +136,7 @@ export function VariantEditor({
             </div>
 
             {canManageImages && expandedImages === field.id && (
-              <div className="mt-3 border-t border-neutral-200 pt-3">
+              <div className="mt-3 border-t border-border pt-3">
                 <ProductImageManager
                   label="Variant Images"
                   existingImages={variantImagesById[variantId!] ?? []}
@@ -146,7 +167,7 @@ export function VariantEditor({
         variant="outline"
         size="sm"
         onClick={() =>
-          append({ color: '', size: 'M', fabricStatus: 'stitched', price: 0, comparePrice: '', stock: 0 })
+          append({ color: '', size: 'M', fabricStatus: 'stitched', price: 0, comparePrice: '', costPrice: '', stock: 0 })
         }
         className="flex items-center gap-1.5"
       >

@@ -32,10 +32,10 @@ export function ChatWidget() {
   const previousAuth = useRef(authStatus);
 
   // StorefrontShell-wide launcher position. Product detail pages pin StickyAddToCartBar to
-  // the bottom edge below the md breakpoint, so the launcher must clear it there.
+  // the bottom edge below the lg breakpoint, so the launcher must clear it there.
   const pathname = usePathname();
   const hasStickyBar = pathname.startsWith('/products/');
-  const launcherPosition = hasStickyBar ? 'bottom-28 md:bottom-6' : 'bottom-5 sm:bottom-6';
+  const launcherPosition = hasStickyBar ? 'bottom-28 lg:bottom-6' : 'bottom-5 sm:bottom-6';
 
   // Replies can contain a customer's order details: wipe the conversation on logout.
   useEffect(() => {

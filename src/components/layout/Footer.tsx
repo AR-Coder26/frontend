@@ -1,6 +1,6 @@
-
 import Link from 'next/link';
 import Image from 'next/image';
+import { ArrowUpRight } from 'lucide-react';
 
 import { getCategories } from '@/lib/api/categories';
 import { getPublicStoreSettings } from '@/lib/api/storeSettings';
@@ -8,6 +8,13 @@ import { getSocialLinks } from '@/lib/api/socialLinks';
 import { buildStoreWhatsAppLink } from '@/lib/whatsapp';
 import { SocialIcon } from '@/lib/socialIcons';
 import { STORE_LEGAL_NAME } from '@/lib/legal';
+
+// White-label credit (part of the ARQ-DevTech branding agreement). Kept as constants so the
+// name and link are changed in exactly one place.
+const DEVELOPER_CREDIT = {
+  name: 'ARQ-DevTech',
+  url: 'https://arq-devtech.vercel.app/',
+} as const;
 
 export async function Footer() {
   const [categories, storeSettings, socialLinks] = await Promise.all([
@@ -346,13 +353,45 @@ export async function Footer() {
               Order updates are sent via WhatsApp, not courier tracking.
             </p>
 
-            <Link
+            {/** <Link
               href="/admin/login"
               className="text-muted-foreground/60 transition-colors hover:text-muted-foreground"
             >
               Admin
-            </Link>
+            </Link> */}
           </div>
+        </div>
+      </div>
+
+      {/* White-label credit */}
+      <div className="border-t border-border">
+        <div
+          className="
+            container flex flex-wrap items-center justify-center
+            gap-x-2.5 gap-y-2 py-3
+            text-center text-xs leading-5 text-muted-foreground
+            xl:text-[13px]
+          "
+        >
+          <span>This website has been designed and developed by</span>
+
+          <a
+            href={DEVELOPER_CREDIT.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${DEVELOPER_CREDIT.name} (opens in a new tab)`}
+            className="
+              inline-flex min-h-8 items-center gap-1
+              rounded-full border border-border bg-card px-3 py-1
+              font-medium text-foreground
+              transition-colors
+              hover:border-primary hover:text-primary
+              [@media(pointer:coarse)]:min-h-11
+            "
+          >
+            {DEVELOPER_CREDIT.name}
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
         </div>
       </div>
     </footer>

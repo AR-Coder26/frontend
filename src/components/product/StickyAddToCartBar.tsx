@@ -11,8 +11,8 @@ interface StickyAddToCartBarProps {
 
 /** Always visible at the bottom on mobile (not scroll-triggered) — a deliberately simple,
  *  well-established mobile e-commerce pattern rather than adding IntersectionObserver
- *  complexity for a marginal UX gain. Hidden entirely on desktop; the inline quantity/cart
- *  row in ProductPurchasePanel covers that breakpoint. */
+ *  complexity for a marginal UX gain. Hidden from lg up, where the two-column layout shows
+ *  the inline quantity/cart row in ProductPurchasePanel instead. */
 export function StickyAddToCartBar({
   price,
   disabled,
@@ -21,17 +21,19 @@ export function StickyAddToCartBar({
   onBuyNow,
 }: StickyAddToCartBarProps) {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card p-3 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] md:hidden">
-      <div className="mb-2 text-center font-display text-base text-foreground">
-        {price !== null ? formatPKR(price) : '—'}
-      </div>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" className="flex-1" disabled={disabled} onClick={onAddToCart}>
-          {addToCartLabel}
-        </Button>
-        <Button size="sm" className="flex-1" disabled={disabled} onClick={onBuyNow}>
-          Buy Now
-        </Button>
+    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-4px_12px_rgba(0,0,0,0.06)] lg:hidden">
+      <div className="mx-auto max-w-xl">
+        <div className="mb-2 text-center font-display text-base text-foreground">
+          {price !== null ? formatPKR(price) : '—'}
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="flex-1" disabled={disabled} onClick={onAddToCart}>
+            {addToCartLabel}
+          </Button>
+          <Button size="sm" className="flex-1" disabled={disabled} onClick={onBuyNow}>
+            Buy Now
+          </Button>
+        </div>
       </div>
     </div>
   );

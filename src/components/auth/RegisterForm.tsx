@@ -59,7 +59,7 @@ export function RegisterForm({ redirectTo }: RegisterFormProps) {
         <input
           id="name"
           {...register('name')}
-          className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
         {errors.name && <p className="mt-1 text-xs text-destructive">{errors.name.message}</p>}
       </div>
@@ -72,7 +72,7 @@ export function RegisterForm({ redirectTo }: RegisterFormProps) {
           id="email"
           type="email"
           {...register('email')}
-          className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
         {errors.email && <p className="mt-1 text-xs text-destructive">{errors.email.message}</p>}
       </div>
@@ -85,7 +85,7 @@ export function RegisterForm({ redirectTo }: RegisterFormProps) {
           id="phone"
           placeholder="03001234567"
           {...register('phone')}
-          className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
         {errors.phone && <p className="mt-1 text-xs text-destructive">{errors.phone.message}</p>}
         <p className="mt-1 text-xs text-muted-foreground">
@@ -101,7 +101,7 @@ export function RegisterForm({ redirectTo }: RegisterFormProps) {
           id="password"
           type="password"
           {...register('password')}
-          className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
         {errors.password && (
           <p className="mt-1 text-xs text-destructive">{errors.password.message}</p>

@@ -69,14 +69,14 @@ export default async function BrandPage({ params, searchParams }: BrandPageProps
         <h1 className="font-display text-2xl text-foreground">{brand.name}</h1>
       </div>
 
-      <div className="mt-6 flex flex-col gap-8 md:flex-row">
+      <div className="mt-6 flex flex-col gap-4 md:flex-row md:gap-8">
         {/* brands={[]} deliberately, not the full brand list — FilterPanel already hides its
             Brand chips section when the array is empty (see FilterPanel.tsx), and showing
             them here would be both redundant (this whole page IS one brand) and non-
             functional (this page pins `brand` from the ROUTE slug, not from a searchParam,
             so a chip click would update the URL while the page kept ignoring it). */}
         <ProductFilters brands={[]} />
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <Suspense key={resultsKey} fallback={<ProductGridSkeleton />}>
             <ProductListingResults params={filterParams} />
           </Suspense>

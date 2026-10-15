@@ -109,7 +109,7 @@ function PaymentOption({ title, description, selected, onSelect, children }: Pay
         >
           {selected && <span className="h-2 w-2 rounded-full bg-primary" />}
         </span>
-        <span>
+        <span className="min-w-0">
           <span className="block text-sm font-medium text-foreground">{title}</span>
           <span className="block text-xs text-muted-foreground">{description}</span>
         </span>
@@ -129,9 +129,9 @@ function AccountDetails({
   return (
     <div className="rounded-md bg-secondary p-3 text-xs">
       {rows.map(([label, val]) => (
-        <div key={label} className="flex justify-between py-0.5">
-          <span className="text-muted-foreground">{label}</span>
-          <span className="font-medium text-foreground">{val}</span>
+        <div key={label} className="flex justify-between gap-3 py-0.5">
+          <span className="shrink-0 text-muted-foreground">{label}</span>
+          <span className="min-w-0 break-all text-right font-medium text-foreground">{val}</span>
         </div>
       ))}
       {instructions && <p className="mt-2 text-muted-foreground">{instructions}</p>}

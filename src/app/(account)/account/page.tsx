@@ -14,7 +14,7 @@ export default function AccountPage() {
       <p className="mt-2 text-sm text-muted-foreground">
         Manage your orders and delivery addresses.
       </p>
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Link
           href="/account/orders"
           className="rounded-md border border-border p-5 transition-colors hover:border-primary"

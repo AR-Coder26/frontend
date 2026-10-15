@@ -21,7 +21,7 @@ export function ProductDetailInteractive({ product }: ProductDetailInteractivePr
   const selection = useVariantSelection(product);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
       {/* Keyed by selectedColor so the gallery remounts (resetting to its first photo)
           whenever the customer picks a different color — see ProductGallery's own comment
           on why this key is required, not optional. */}

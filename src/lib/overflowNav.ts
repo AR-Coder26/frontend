@@ -49,3 +49,43 @@ export function computeVisibleCount({
   }
   return visible;
 }
+
+export type MenuNavKey = 'ArrowDown' | 'ArrowUp' | 'Home' | 'End';
+
+export function isMenuNavKey(key: string): key is MenuNavKey {
+  return key === 'ArrowDown' || key === 'ArrowUp' || key === 'Home' || key === 'End';
+}
+
+/**
+ * Which menu item should get focus after `key`, given the currently focused index
+ * (-1 = none). Arrow keys wrap around, as in the WAI-ARIA menu/disclosure patterns.
+ * Returns -1 only when the menu is empty.
+ */
+export function nextMenuIndex(current: number, count: number, key: MenuNavKey): number {
+  if (count <= 0) return -1;
+  switch (key) {
+    case 'Home':
+      return 0;
+    case 'End':
+      return count - 1;
+    case 'ArrowDown':
+      return current < 0 ? 0 : (current + 1) % count;
+    case 'ArrowUp':
+      return current < 0 ? count - 1 : (current - 1 + count) % count;
+  }
+}
+
+/**
+ * Type-ahead: the next label (after `current`, wrapping) that starts with the typed
+ * character, case-insensitively. Returns -1 when nothing matches. Lets a keyboard user jump
+ * to "Silk" in a long category list by pressing S.
+ */
+export function typeaheadIndex(labels: string[], current: number, character: string): number {
+  const count = labels.length;
+  const needle = character.toLowerCase();
+  for (let step = 1; step <= count; step += 1) {
+    const index = (((current + step) % count) + count) % count;
+    if (labels[index]?.toLowerCase().startsWith(needle)) return index;
+  }
+  return -1;
+}

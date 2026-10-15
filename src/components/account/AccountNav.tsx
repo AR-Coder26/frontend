@@ -28,7 +28,7 @@ export function AccountNav() {
   }
 
   return (
-    <nav className="space-y-1">
+    <nav className="flex flex-wrap gap-2 md:block md:space-y-1">
       {LINKS.map((link) => (
         <Link
           key={link.href}
@@ -45,7 +45,7 @@ export function AccountNav() {
       <button
         type="button"
         onClick={handleLogout}
-        className="block w-full rounded-md px-3 py-2 text-left text-sm text-destructive hover:bg-secondary"
+        className="block rounded-md px-3 py-2 text-left text-sm text-destructive hover:bg-secondary md:w-full"
       >
         Log Out
       </button>

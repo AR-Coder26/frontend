@@ -12,7 +12,7 @@ export function CategoryTiles({ categories }: CategoryTilesProps) {
   return (
     <section className="container py-12">
       <h2 className="font-display text-2xl text-foreground">Shop by Category</h2>
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
         {categories.map((category) => (
           <Link
             key={category._id}
@@ -32,7 +32,7 @@ export function CategoryTiles({ categories }: CategoryTilesProps) {
               // name, rather than a broken image icon or a fake stock photo.
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10" />
             )}
-            <span className="relative z-10 w-full bg-gradient-to-t from-foreground/70 to-transparent p-4 font-display text-lg text-background">
+            <span className="relative z-10 w-full break-words bg-gradient-to-t from-foreground/70 to-transparent p-3 font-display text-base text-background sm:p-4 sm:text-lg">
               {category.name}
             </span>
           </Link>

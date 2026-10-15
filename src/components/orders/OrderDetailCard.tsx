@@ -1,3 +1,4 @@
+// src/components/orders/OrderDetailCard.tsx
 'use client';
 
 import { useState } from 'react';
@@ -39,10 +40,10 @@ export function OrderDetailCard({ order, onCancel, onCancelled }: OrderDetailCar
   }
 
   return (
-    <div className="rounded-md border border-border p-5">
+    <div className="rounded-md border border-border p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <p className="font-display text-lg text-foreground">#{order.orderNumber}</p>
+          <p className="break-words font-display text-lg text-foreground">#{order.orderNumber}</p>
           <p className="text-xs text-muted-foreground">
             Placed{' '}
             {new Date(order.createdAt).toLocaleDateString('en-GB', {
@@ -59,10 +60,10 @@ export function OrderDetailCard({ order, onCancel, onCancelled }: OrderDetailCar
         {order.items.map((item) => (
           <div
             key={`${item.product}-${item.variantSku}`}
-            className="flex justify-between py-2.5 text-sm"
+            className="flex justify-between gap-3 py-2.5 text-sm"
           >
-            <div>
-              <p className="text-foreground">{item.productName}</p>
+            <div className="min-w-0">
+              <p className="break-words text-foreground">{item.productName}</p>
               <p className="text-xs text-muted-foreground">
                 {item.color} · {item.size} · <span className="capitalize">{item.fabricStatus}</span>{' '}
                 × {item.quantity}
@@ -91,7 +92,7 @@ export function OrderDetailCard({ order, onCancel, onCancelled }: OrderDetailCar
       </div>
 
       <div className="mt-4 border-t border-border pt-3 text-sm">
-        <p className="text-muted-foreground">
+        <p className="break-words text-muted-foreground">
           Delivering to {order.shippingAddress.addressLine}, {order.shippingAddress.city}
         </p>
         <p className="mt-1 text-muted-foreground">Payment: {order.paymentMethod}</p>
@@ -102,7 +103,7 @@ export function OrderDetailCard({ order, onCancel, onCancelled }: OrderDetailCar
       </p>
 
       {order.cancelReason && (
-        <p className="mt-2 text-xs text-destructive">Cancelled: {order.cancelReason}</p>
+        <p className="mt-2 break-words text-xs text-destructive">Cancelled: {order.cancelReason}</p>
       )}
 
       {/* Uses the backend's own `canBeCancelled` virtual directly rather than
@@ -124,9 +125,9 @@ export function OrderDetailCard({ order, onCancel, onCancelled }: OrderDetailCar
                 value={cancelReason}
                 onChange={(event) => setCancelReason(event.target.value)}
                 rows={2}
-                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant="destructive"
                   size="sm"

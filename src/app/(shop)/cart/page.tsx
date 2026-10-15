@@ -31,8 +31,8 @@ export default function CartPage() {
       {items.length === 0 ? (
         <CartEmptyState />
       ) : (
-        <div className="mt-6 grid gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+        <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="min-w-0 lg:col-span-2">
             <label className="flex items-center gap-2 border-b border-border pb-3 text-xs text-muted-foreground">
               <input
                 type="checkbox"
@@ -49,7 +49,7 @@ export default function CartPage() {
             </div>
           </div>
 
-          <div className="h-fit rounded-md border border-border p-5">
+          <div className="h-fit min-w-0 rounded-md border border-border p-4 sm:p-5">
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
               <span className="font-display text-lg text-foreground">

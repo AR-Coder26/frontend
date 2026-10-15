@@ -27,9 +27,9 @@ export function ProductSpecs({ product }: ProductSpecsProps) {
   return (
     <dl className="mt-6 divide-y divide-border border-t border-border text-sm">
       {specs.map((spec) => (
-        <div key={spec.label} className="flex justify-between py-2.5">
-          <dt className="text-muted-foreground">{spec.label}</dt>
-          <dd className="text-foreground">{spec.value}</dd>
+        <div key={spec.label} className="flex justify-between gap-4 py-2.5">
+          <dt className="shrink-0 text-muted-foreground">{spec.label}</dt>
+          <dd className="min-w-0 break-words text-right text-foreground">{spec.value}</dd>
         </div>
       ))}
     </dl>

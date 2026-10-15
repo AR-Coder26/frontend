@@ -11,12 +11,12 @@ import { Button } from '@/components/ui/button';
 export function HeroSection() {
   return (
     <section className="border-b border-border bg-secondary">
-      <div className="container flex min-h-[60vh] flex-col items-start justify-center py-16 sm:min-h-[70vh]">
+      <div className="container flex min-h-[60svh] flex-col items-start justify-center py-16 sm:min-h-[70svh]">
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="text-xs font-medium uppercase tracking-[0.2em] text-accent"
+          className="text-xs font-medium uppercase tracking-[0.12em] text-accent sm:tracking-[0.2em]"
         >
           Lawn · Cotton · Khaddar · Chiffon · Silk
         </motion.p>
@@ -41,7 +41,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
-          className="mt-8 flex gap-3"
+          className="mt-8 flex flex-wrap gap-3"
         >
           <Button size="lg" asChild>
             <Link href="/products">Shop All</Link>

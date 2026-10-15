@@ -61,7 +61,7 @@ export default function AccountAddressesPage() {
       )}
 
       {addresses && addresses.length > 0 && (
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {addresses.map((address) => (
             <AddressCard
               key={address._id}

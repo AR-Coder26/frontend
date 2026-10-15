@@ -24,7 +24,7 @@ export function ProductFilters({ brands }: ProductFiltersProps) {
       {/* Mobile: a trigger button opening the same panel in a bottom Sheet, so the "filter
           panel transition" the design mandate calls for is a real slide-up, not a plain
           inline block pushing the grid down on a small screen. */}
-      <div className="mb-4 md:hidden">
+      <div className="md:hidden">
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger asChild>
             <Button variant="outline" size="sm">
@@ -32,7 +32,7 @@ export function ProductFilters({ brands }: ProductFiltersProps) {
               Filters
             </Button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-xl">
+          <SheetContent side="bottom" className="max-h-[85dvh] overflow-y-auto rounded-t-xl">
             <SheetHeader>
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>

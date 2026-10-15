@@ -86,7 +86,7 @@ export function AddressFormDialog({
               id="label"
               placeholder="Home, Office…"
               {...register('label')}
-              className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             {errors.label && <p className="mt-1 text-xs text-destructive">{errors.label.message}</p>}
           </div>
@@ -98,7 +98,7 @@ export function AddressFormDialog({
             <input
               id="addressLine"
               {...register('addressLine')}
-              className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             {errors.addressLine && (
               <p className="mt-1 text-xs text-destructive">{errors.addressLine.message}</p>
@@ -113,7 +113,7 @@ export function AddressFormDialog({
               <input
                 id="city"
                 {...register('city')}
-                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.city && <p className="mt-1 text-xs text-destructive">{errors.city.message}</p>}
             </div>
@@ -124,7 +124,7 @@ export function AddressFormDialog({
               <input
                 id="postalCode"
                 {...register('postalCode')}
-                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
           </div>

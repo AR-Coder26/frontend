@@ -1,4 +1,3 @@
-// frontend/src/components/filters/FilterPanel.tsx
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -134,7 +133,7 @@ export function FilterPanel({ brands }: FilterPanelProps) {
           id="sort"
           value={activeSort}
           onChange={(event) => updateParam('sort', event.target.value)}
-          className="mt-2 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-2 w-full rounded-md border border-input bg-card px-3 py-2 text-base text-foreground sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <option value="newest">Newest</option>
           <option value="oldest">Oldest</option>

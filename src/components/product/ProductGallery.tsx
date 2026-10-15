@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type MouseEvent } from 'react';
+import { useState, type PointerEvent as ReactPointerEvent } from 'react';
 import Image from 'next/image';
 import type { ImageAsset } from '@/types';
 
@@ -29,7 +29,19 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
   const validImages = images.filter((image) => image.url);
   const activeImage = validImages[activeIndex];
 
-  function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
+  // Hover-zoom is for a real mouse only. Touch screens fire emulated mouseenter/mousemove on a
+  // tap, which used to leave the photo stuck at 1.6x until the next tap elsewhere. Pointer
+  // events carry the pointer type, so touch and pen are ignored here (pinch-zoom still works).
+  function handlePointerEnter(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.pointerType === 'mouse') setIsZooming(true);
+  }
+
+  function handlePointerLeave(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.pointerType === 'mouse') setIsZooming(false);
+  }
+
+  function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== 'mouse') return;
     const bounds = event.currentTarget.getBoundingClientRect();
     const x = ((event.clientX - bounds.left) / bounds.width) * 100;
     const y = ((event.clientY - bounds.top) / bounds.height) * 100;
@@ -37,16 +49,18 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
   }
 
   if (!activeImage) {
-    return <div className="skeleton aspect-[3/4] rounded-md bg-secondary" />;
+    return <div className="skeleton mx-auto aspect-[3/4] w-full max-w-lg rounded-md bg-secondary lg:max-w-none" />;
   }
 
   return (
-    <div>
+    // max-w-lg keeps the 3:4 photo from becoming ~900px tall on tablets, where the layout is
+    // still a single column; min-w-0 stops a long thumbnail strip from widening the page.
+    <div className="mx-auto w-full min-w-0 max-w-lg lg:max-w-none">
       <div
-        className="relative aspect-[3/4] cursor-zoom-in overflow-hidden rounded-md bg-secondary"
-        onMouseEnter={() => setIsZooming(true)}
-        onMouseLeave={() => setIsZooming(false)}
-        onMouseMove={handleMouseMove}
+        className="relative aspect-[3/4] overflow-hidden rounded-md bg-secondary md:cursor-zoom-in"
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+        onPointerMove={handlePointerMove}
       >
         <Image
           src={activeImage.url}
@@ -63,7 +77,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
       </div>
 
       {validImages.length > 1 && (
-        <div className="mt-3 flex gap-2 overflow-x-auto">
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
           {validImages.map((image, index) => (
             <button
               key={image.publicId}

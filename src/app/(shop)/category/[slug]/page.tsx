@@ -1,4 +1,3 @@
-// frontend/src/app/(shop)/category/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
@@ -62,9 +61,9 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{category.description}</p>
       )}
 
-      <div className="mt-6 flex flex-col gap-8 md:flex-row">
+      <div className="mt-6 flex flex-col gap-4 md:flex-row md:gap-8">
         <ProductFilters brands={brands} />
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <Suspense key={resultsKey} fallback={<ProductGridSkeleton />}>
             <ProductListingResults params={filterParams} />
           </Suspense>

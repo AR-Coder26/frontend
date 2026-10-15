@@ -69,7 +69,7 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
         <input
           id="identifier"
           {...register('identifier')}
-          className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
         {errors.identifier && (
           <p className="mt-1 text-xs text-destructive">{errors.identifier.message}</p>
@@ -97,7 +97,7 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
             id="password"
             type={showPassword ? 'text' : 'password'}
             {...register('password')}
-            className="w-full rounded-md border border-input bg-card px-3 py-2 pr-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="w-full rounded-md border border-input bg-card px-3 py-2 pr-10 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
           <button
             type="button"

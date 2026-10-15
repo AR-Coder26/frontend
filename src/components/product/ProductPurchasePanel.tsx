@@ -98,13 +98,13 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
   }
 
   return (
-    <div className="pb-24 md:pb-0">
+    <div className="min-w-0 pb-28 lg:pb-0">
       {product.brand && (
         <p className="text-xs uppercase tracking-wide text-muted-foreground">
           {product.brand.name}
         </p>
       )}
-      <h1 className="mt-1 font-display text-2xl text-foreground sm:text-3xl">{product.name}</h1>
+      <h1 className="mt-1 break-words font-display text-2xl text-foreground sm:text-3xl">{product.name}</h1>
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
         {selectedVariant ? (
@@ -195,7 +195,7 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
       {selection.fabricStatuses.length > 1 && (
         <div className="mt-5">
           <p className="text-xs font-medium uppercase tracking-wider text-accent">Stitching</p>
-          <div className="mt-2 flex gap-2">
+          <div className="mt-2 flex flex-wrap gap-2">
             {selection.fabricStatuses.map((status) => {
               const available = selection.isFabricStatusAvailable(status);
               const isSelected = selection.selectedFabricStatus === status;
@@ -238,9 +238,10 @@ export function ProductPurchasePanel({ product, selection }: ProductPurchasePane
         )}
       </div>
 
-      {/* Desktop quantity + add to cart / buy now — hidden on mobile, StickyAddToCartBar
-          covers that breakpoint instead. */}
-      <div className="mt-6 hidden items-center gap-3 md:flex">
+      {/* Desktop quantity + add to cart / buy now — shown only from lg up, where the page is
+          two columns and this panel is wide enough for the whole row. Below lg (phones AND
+          tablets, single column) StickyAddToCartBar covers it instead. */}
+      <div className="mt-6 hidden items-center gap-3 lg:flex">
         <QuantityStepper
           value={quantity}
           max={selectedVariant?.stock ?? 1}

@@ -85,11 +85,11 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mt-6 grid gap-8 lg:grid-cols-3">
-      <div className="space-y-6 lg:col-span-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <div className="min-w-0 space-y-6 lg:col-span-2">
         <section>
           <h2 className="font-display text-lg text-foreground">Contact</h2>
-          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
               <label htmlFor="name" className="text-xs font-medium text-muted-foreground">
                 Full name
@@ -97,7 +97,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
               <input
                 id="name"
                 {...register('name')}
-                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.name && <p className="mt-1 text-xs text-destructive">{errors.name.message}</p>}
             </div>
@@ -110,7 +110,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
                 id="phone"
                 placeholder="03001234567"
                 {...register('phone')}
-                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.phone && (
                 <p className="mt-1 text-xs text-destructive">{errors.phone.message}</p>
@@ -128,7 +128,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
                 id="whatsappNumber"
                 placeholder="Same as phone if left blank"
                 {...register('whatsappNumber')}
-                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.whatsappNumber && (
                 <p className="mt-1 text-xs text-destructive">{errors.whatsappNumber.message}</p>
@@ -143,7 +143,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
                 id="email"
                 type="email"
                 {...register('email')}
-                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.email && (
                 <p className="mt-1 text-xs text-destructive">{errors.email.message}</p>
@@ -154,7 +154,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
 
         <section>
           <h2 className="font-display text-lg text-foreground">Delivery address</h2>
-          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
               <label htmlFor="addressLine" className="text-xs font-medium text-muted-foreground">
                 Address
@@ -162,7 +162,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
               <input
                 id="addressLine"
                 {...register('addressLine')}
-                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.addressLine && (
                 <p className="mt-1 text-xs text-destructive">{errors.addressLine.message}</p>
@@ -176,7 +176,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
               <input
                 id="city"
                 {...register('city')}
-                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               {errors.city && <p className="mt-1 text-xs text-destructive">{errors.city.message}</p>}
             </div>
@@ -188,7 +188,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
               <input
                 id="postalCode"
                 {...register('postalCode')}
-                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="mt-1 w-full rounded-md border border-input bg-card px-3 py-2 text-base sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
           </div>
@@ -206,7 +206,7 @@ export function CheckoutForm({ storeSettings, onOrderPlaced }: CheckoutFormProps
         </section>
       </div>
 
-      <div className="h-fit lg:sticky lg:top-24">
+      <div className="h-fit min-w-0 lg:sticky lg:top-24">
         <OrderSummary items={selectedItems} city={watchedCity} storeSettings={storeSettings} />
         <Button
           type="submit"

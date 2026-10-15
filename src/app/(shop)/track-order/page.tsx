@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { OrderLookupForm } from '@/components/orders/OrderLookupForm';
 import { OrderDetailCard } from '@/components/orders/OrderDetailCard';
+import { OrderDetailSkeleton } from '@/components/skeletons/OrderDetailSkeleton';
 import { lookupGuestOrder, cancelGuestOrder } from '@/lib/api/orders';
 import { ApiError } from '@/lib/api/client';
 import type { Order } from '@/types';
@@ -48,7 +49,13 @@ export default function TrackOrderPage() {
 
       {lookupError && <p className="mt-4 text-center text-sm text-destructive">{lookupError}</p>}
 
-      {order && lastLookup && (
+      {isSubmitting && (
+        <div className="mx-auto mt-8 max-w-lg">
+          <OrderDetailSkeleton />
+        </div>
+      )}
+
+      {!isSubmitting && order && lastLookup && (
         <div className="mx-auto mt-8 max-w-lg">
           <OrderDetailCard
             order={order}

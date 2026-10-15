@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useCartStore } from '@/store/cartStore';
 import { useHasMounted } from '@/hooks/useHasMounted';
 import { CartEmptyState } from '@/components/cart/CartEmptyState';
+import { CheckoutSkeleton } from '@/components/skeletons/CheckoutSkeleton';
 import { CheckoutForm } from './CheckoutForm';
 import { OrderConfirmation } from './OrderConfirmation';
 import type { Order, StoreSettingsPublic } from '@/types';
@@ -20,7 +21,7 @@ export function CheckoutPageClient({ storeSettings }: CheckoutPageClientProps) {
   const [placedOrder, setPlacedOrder] = useState<Order | null>(null);
 
   if (!hasMounted) {
-    return <div className="container py-8" />;
+    return <CheckoutSkeleton />;
   }
 
   if (placedOrder) {

@@ -5,6 +5,7 @@ import { useCartStore } from '@/store/cartStore';
 import { useHasMounted } from '@/hooks/useHasMounted';
 import { CartLineItem } from '@/components/cart/CartLineItem';
 import { CartEmptyState } from '@/components/cart/CartEmptyState';
+import { CartSkeleton } from '@/components/skeletons/CartSkeleton';
 import { Button } from '@/components/ui/button';
 import { formatPKR } from '@/lib/utils';
 
@@ -15,10 +16,10 @@ export default function CartPage() {
   const selectAll = useCartStore((state) => state.selectAll);
   const deselectAll = useCartStore((state) => state.deselectAll);
 
-  // Same "render nothing until hydrated" shell the rest of the app uses for persisted cart
-  // state — see useHasMounted.ts.
+  // The persisted cart can only be read in the browser, so until hydration we show a skeleton
+  // shaped like the cart (an empty box made the page jump) — see useHasMounted.ts.
   if (!hasMounted) {
-    return <div className="container py-8" />;
+    return <CartSkeleton />;
   }
 
   const selectedCount = items.filter((i) => i.isSelected).length;

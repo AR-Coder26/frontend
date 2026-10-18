@@ -3,7 +3,9 @@ import { Fraunces, Manrope } from 'next/font/google';
 import { MotionConfig } from 'framer-motion';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { ThemedToaster } from '@/components/theme/ThemedToaster';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { THEME_INIT_SCRIPT } from '@/lib/theme';
+import { LOGO_URL, SITE_NAME, SITE_URL } from '@/lib/seo';
 import './globals.css';
 
 // Display face: Fraunces — a warm, high-contrast serif with real optical-size and italic
@@ -27,13 +29,23 @@ const manrope = Manrope({
   display: 'swap',
 });
 
+// NOTE: do NOT add `alternates.canonical` here — it would be inherited by every page that
+// does not set its own. Each page sets its own canonical (see src/lib/seo.ts).
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
   title: {
     default: 'Brandox | Women\u2019s Clothing in Pakistan',
     template: '%s | Brandox',
   },
   description:
     'Brandox — stitched & unstitched suits in Lawn, Cotton, Khaddar, Chiffon and Silk — 1, 2 & 3-piece. Cash on Delivery, JazzCash, EasyPaisa and Bank Transfer accepted.',
+  openGraph: {
+    type: 'website',
+    siteName: SITE_NAME,
+    locale: 'en_PK',
+  },
+  twitter: { card: 'summary' },
 };
 
 // Colors the browser's own chrome (mobile address bar). These follow the OS setting; a manual
@@ -46,6 +58,51 @@ export const viewport: Viewport = {
   ],
 };
 
+// Organization + WebSite structured data, rendered once for the whole site.
+const whatsappDigits = process.env.NEXT_PUBLIC_STORE_WHATSAPP_NUMBER?.replace(/\D/g, '');
+
+const siteJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: LOGO_URL,
+      ...(whatsappDigits
+        ? {
+            contactPoint: [
+              {
+                '@type': 'ContactPoint',
+                telephone: `+${whatsappDigits}`,
+                contactType: 'customer service',
+                areaServed: 'PK',
+                availableLanguage: ['English', 'Urdu'],
+              },
+            ],
+          }
+        : {}),
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      inLanguage: 'en-PK',
+      publisher: { '@id': `${SITE_URL}/#organization` },
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${SITE_URL}/products?search={search_term_string}`,
+        },
+        'query-input': 'required name=search_term_string',
+      },
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -53,11 +110,12 @@ export default function RootLayout({
     // suppressHydrationWarning is required on <html>: the inline script below adds the `dark`
     // class and `color-scheme` style before React hydrates, so the server markup and the live
     // element legitimately differ. It only silences warnings for this one element's attributes.
-    <html lang="en" className={`${fraunces.variable} ${manrope.variable}`} suppressHydrationWarning>
+    <html lang="en-PK" className={`${fraunces.variable} ${manrope.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
+        <JsonLd data={siteJsonLd} />
         <ThemeProvider>
           <MotionConfig reducedMotion="user">{children}</MotionConfig>
           <ThemedToaster />

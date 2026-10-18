@@ -32,11 +32,12 @@ export interface ProductListParams {
 export function getProducts(params: ProductListParams = {}) {
   return request<Paginated<"products", Product>>(
     `/products${buildQueryString(params)}`,
+    { revalidate: 120 },
   );
 }
 
 export function getProductBySlug(slug: string) {
-  return request<Product>(`/products/${slug}`);
+  return request<Product>(`/products/${slug}`, { revalidate: 120 });
 }
 
 // ---------- Admin ----------

@@ -16,6 +16,8 @@ export async function ProductListingResults({ params }: ProductListingResultsPro
 
   return (
     <div>
+      {/* Product cards use <h3>; this hidden <h2> stops the outline jumping from H1 to H3. */}
+      <h2 className="sr-only">Products</h2>
       <p className="mb-4 text-sm text-muted-foreground">
         {total} {total === 1 ? 'product' : 'products'}
       </p>

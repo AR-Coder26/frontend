@@ -9,7 +9,7 @@ import type { StoreSettingsAdmin, StoreSettingsPublic } from '@/types';
  * isn't offered.
  */
 export function getPublicStoreSettings() {
-  return request<StoreSettingsPublic>('/store-settings');
+  return request<StoreSettingsPublic>('/store-settings', { revalidate: 60 });
 }
 
 /** Full singleton doc including every isActive flag — powers the admin settings form. */

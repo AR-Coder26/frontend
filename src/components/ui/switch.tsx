@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-export interface SwitchProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {}
+// Interface ki jagah type alias use karein
+export type SwitchProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'>;
 
 /** A styled checkbox that LOOKS like a toggle switch — no @radix-ui/react-switch is
  *  installed, and a native checkbox already carries correct semantics/keyboard behavior for

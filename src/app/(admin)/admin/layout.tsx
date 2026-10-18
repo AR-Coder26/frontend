@@ -1,5 +1,10 @@
+import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { AdminAuthInitializer } from '@/components/layout/AdminAuthInitializer';
+import { NOINDEX_METADATA } from '@/lib/seo';
+
+// The whole admin panel (including /admin/login) must never be indexed.
+export const metadata: Metadata = NOINDEX_METADATA;
 
 /**
  * OUTER admin layout — intentionally minimal, no sidebar, no auth guard. It wraps BOTH

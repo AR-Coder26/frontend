@@ -48,6 +48,30 @@ interface RequestOptions extends Omit<RequestInit, 'body'> {
   refreshPath?: string;
   /** Internal — prevents infinite refresh loops. Never pass this yourself. */
   _isRetry?: boolean;
+  /**
+   * Server-side only: cache this GET in Next's data cache for N seconds. Public storefront
+   * reads use this so every page view does not hit the backend (and its rate limiter).
+   * Ignored in the browser and for non-GET requests.
+   */
+  revalidate?: number;
+}
+
+/** Rejects like AbortSignal.timeout() would, without using a signal (which can bypass Next's data cache). */
+function withServerTimeout<T>(promise: Promise<T>, ms: number | null): Promise<T> {
+  if (ms === null) return promise;
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new DOMException('Timed out', 'TimeoutError')), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
 }
 
 // ─── Single-flight token refresh ──────────────────────────────────────────────────────────
@@ -87,18 +111,23 @@ export const refreshCustomerSession = () => refreshSession(CUSTOMER_REFRESH_PATH
 export const refreshAdminSession = () => refreshSession(ADMIN_REFRESH_PATH);
 
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { refreshPath, _isRetry, headers, body, ...rest } = options;
+  const { refreshPath, _isRetry, headers, body, revalidate, ...rest } = options;
   const isBrowser = typeof window !== 'undefined';
   const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
   const isPlainObject = body !== undefined && !isFormData && typeof body === 'object';
 
-  const signal = rest.signal ?? (isBrowser ? undefined : AbortSignal.timeout(SERVER_REQUEST_TIMEOUT_MS));
+  const useDataCache =
+    !isBrowser && revalidate !== undefined && (rest.method ?? 'GET').toUpperCase() === 'GET';
+  const signal = useDataCache
+    ? rest.signal
+    : rest.signal ?? (isBrowser ? undefined : AbortSignal.timeout(SERVER_REQUEST_TIMEOUT_MS));
 
   let res: Response;
   try {
-    res = await fetch(`${getApiBaseUrl()}${path}`, {
+    res = await withServerTimeout(fetch(`${getApiBaseUrl()}${path}`, {
       ...rest,
       signal,
+      ...(useDataCache ? { next: { revalidate } } : {}),
       body: isPlainObject ? JSON.stringify(body) : (body as BodyInit | undefined),
       // Every route in this backend is cookie-authenticated (HTTP-only JWT cookies) — there is
       // no Bearer token to attach, but the browser will only send those cookies at all if
@@ -110,7 +139,7 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
         ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
         ...headers,
       },
-    });
+    }), useDataCache ? SERVER_REQUEST_TIMEOUT_MS : null);
   } catch (error) {
     if (error instanceof DOMException && (error.name === 'TimeoutError' || error.name === 'AbortError')) {
       throw new ApiError(504, 'The store is taking too long to respond. Please try again.');

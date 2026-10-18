@@ -26,7 +26,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
           className="mt-4 max-w-xl font-display text-4xl italic text-foreground sm:text-5xl"
         >
-          Stitched for every wardrobe.
+          Women&apos;s suits in lawn, cotton &amp; khaddar.
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 16 }}
@@ -34,8 +34,8 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
           className="mt-4 max-w-md text-sm text-muted-foreground sm:text-base"
         >
-          Stitched and unstitched suits in 1, 2 and 3-piece — with Cash on Delivery and free
-          delivery across Karachi.
+          Stitched for every wardrobe — stitched and unstitched suits in 1, 2 and 3-piece, with
+          Cash on Delivery and free delivery across Karachi.
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 16 }}

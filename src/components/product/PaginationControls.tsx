@@ -1,6 +1,7 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -9,43 +10,58 @@ interface PaginationControlsProps {
   totalPages: number;
 }
 
+/**
+ * Prev/Next are real <a href> links (via next/link), not click handlers, so Googlebot can
+ * follow them to page 2, 3 ... The "disabled" ends stay plain disabled buttons.
+ */
 export function PaginationControls({ page, totalPages }: PaginationControlsProps) {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  function goToPage(nextPage: number) {
+  function hrefFor(targetPage: number): string {
     const params = new URLSearchParams(searchParams.toString());
-    params.set('page', String(nextPage));
-    router.push(`${pathname}?${params.toString()}`);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (targetPage <= 1) {
+      params.delete('page'); // page 1 is the clean URL — no ?page=1 duplicate
+    } else {
+      params.set('page', String(targetPage));
+    }
+    const query = params.toString();
+    return query ? `${pathname}?${query}` : pathname;
   }
 
   return (
-    <div className="mt-10 flex items-center justify-center gap-4">
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={page <= 1}
-        onClick={() => goToPage(page - 1)}
-        aria-label="Previous page"
-      >
-        <ChevronLeft className="h-4 w-4" />
-        Previous
-      </Button>
+    <nav aria-label="Pagination" className="mt-10 flex items-center justify-center gap-4">
+      {page <= 1 ? (
+        <Button variant="outline" size="sm" disabled aria-label="Previous page">
+          <ChevronLeft className="h-4 w-4" />
+          Previous
+        </Button>
+      ) : (
+        <Button variant="outline" size="sm" asChild>
+          <Link href={hrefFor(page - 1)} rel="prev" aria-label="Previous page">
+            <ChevronLeft className="h-4 w-4" />
+            Previous
+          </Link>
+        </Button>
+      )}
+
       <span className="text-sm text-muted-foreground">
         Page {page} of {totalPages}
       </span>
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={page >= totalPages}
-        onClick={() => goToPage(page + 1)}
-        aria-label="Next page"
-      >
-        Next
-        <ChevronRight className="h-4 w-4" />
-      </Button>
-    </div>
+
+      {page >= totalPages ? (
+        <Button variant="outline" size="sm" disabled aria-label="Next page">
+          Next
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      ) : (
+        <Button variant="outline" size="sm" asChild>
+          <Link href={hrefFor(page + 1)} rel="next" aria-label="Next page">
+            Next
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      )}
+    </nav>
   );
 }

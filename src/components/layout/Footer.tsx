@@ -158,6 +158,42 @@ export async function Footer() {
                 30% Off
               </Link>
             </li>
+            <li>
+              <Link
+                href="/fabric/lawn"
+                className="
+                  text-[14px] leading-5 text-muted-foreground
+                  transition-colors hover:text-foreground
+                  xl:text-[15px]
+                "
+              >
+                Lawn Suits
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/fabric/khaddar"
+                className="
+                  text-[14px] leading-5 text-muted-foreground
+                  transition-colors hover:text-foreground
+                  xl:text-[15px]
+                "
+              >
+                Khaddar Suits
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/karachi"
+                className="
+                  text-[14px] leading-5 text-muted-foreground
+                  transition-colors hover:text-foreground
+                  xl:text-[15px]
+                "
+              >
+                Free Delivery in Karachi
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -346,6 +382,41 @@ export async function Footer() {
             >
               Refund Policy
             </Link>
+
+            <Link
+              href="/about"
+              className="transition-colors hover:text-foreground"
+            >
+              About
+            </Link>
+
+            <Link
+              href="/contact"
+              className="transition-colors hover:text-foreground"
+            >
+              Contact
+            </Link>
+
+            <Link
+              href="/faq"
+              className="transition-colors hover:text-foreground"
+            >
+              FAQ
+            </Link>
+
+            <Link
+              href="/blog"
+              className="transition-colors hover:text-foreground"
+            >
+              Journal
+            </Link>
+
+            <Link
+              href="/size-guide"
+              className="transition-colors hover:text-foreground"
+            >
+              Size Guide
+            </Link>
           </nav>
 
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
@@ -378,7 +449,7 @@ export async function Footer() {
           <a
             href={DEVELOPER_CREDIT.url}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer nofollow"
             aria-label={`${DEVELOPER_CREDIT.name} (opens in a new tab)`}
             className="
               inline-flex min-h-8 items-center gap-1

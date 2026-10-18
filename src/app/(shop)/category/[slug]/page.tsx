@@ -7,6 +7,11 @@ import { ApiError } from '@/lib/api/client';
 import { ProductFilters } from '@/components/filters/ProductFilters';
 import { ProductListingResults } from '@/components/product/ProductListingResults';
 import { ProductGridSkeleton } from '@/components/product/ProductGridSkeleton';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
+import { SeoCopy } from '@/components/seo/SeoCopy';
+import { buildPageMetadata, getListingSeoState, truncate, withPageSuffix } from '@/lib/seo';
+import { CATEGORY_SEO } from '@/lib/seoContent';
+import { getCopyVars } from '@/lib/seoCopyVars';
 import type { ProductListParams } from '@/lib/api/products';
 import type { FabricStatus, FabricType, Size } from '@/types';
 
@@ -30,17 +35,46 @@ async function fetchCategoryOr404(slug: string) {
   }
 }
 
-export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params;
   const category = await fetchCategoryOr404(slug);
-  return { title: category.name, description: category.description ?? undefined };
-}
+  const seo = CATEGORY_SEO[slug];
+  const { canonicalPath, noindex, page } = getListingSeoState(
+    `/category/${slug}`,
+    await searchParams
+  );
 
+  // Hand-written copy for the known categories; a safe generated fallback for any new one.
+  const title = seo?.title ?? `${category.name} for Women Online in Pakistan | Brandox`;
+  const description =
+    seo?.description ??
+    truncate(
+      category.description ||
+        `Shop ${category.name} online. Cash on Delivery, free delivery in Karachi.`,
+      155
+    );
+
+  return buildPageMetadata({
+    title: withPageSuffix(title, page),
+    description,
+    path: canonicalPath,
+    noindex,
+  });
+}
 
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
   const { slug } = await params;
   const resolvedSearchParams = await searchParams;
-  const [category, brands] = await Promise.all([fetchCategoryOr404(slug), getBrands()]);
+  const [category, brands, vars] = await Promise.all([
+    fetchCategoryOr404(slug),
+    getBrands(),
+    getCopyVars(),
+  ]);
+  const seo = CATEGORY_SEO[slug];
+  const { isCleanFirstPage } = getListingSeoState(`/category/${slug}`, resolvedSearchParams);
 
   const filterParams: ProductListParams = {
     category: slug,
@@ -56,7 +90,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   return (
     <div className="container py-8">
-      <h1 className="font-display text-2xl text-foreground">{category.name}</h1>
+      <Breadcrumbs items={[{ name: category.name, href: `/category/${slug}` }]} />
+      <h1 className="font-display text-2xl text-foreground">{seo?.h1 ?? category.name}</h1>
       {category.description && (
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{category.description}</p>
       )}
@@ -69,6 +104,9 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
           </Suspense>
         </div>
       </div>
+
+      {/* Body copy only on the clean first page, and only for categories that have copy. */}
+      {seo && isCleanFirstPage && <SeoCopy blocks={seo.blocks} vars={vars} />}
     </div>
   );
 }

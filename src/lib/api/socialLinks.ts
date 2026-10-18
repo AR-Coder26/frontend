@@ -4,7 +4,7 @@ import type { SocialMediaLink } from '@/types';
 // ---------- Public ----------
 
 export function getSocialLinks() {
-  return request<SocialMediaLink[]>('/social-links');
+  return request<SocialMediaLink[]>('/social-links', { revalidate: 300 });
 }
 
 // ---------- Admin ----------

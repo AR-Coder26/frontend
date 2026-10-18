@@ -5,11 +5,11 @@ import type { Category } from '@/types';
 
 /** Active categories only, sorted by displayOrder then name. */
 export function getCategories() {
-  return request<Category[]>('/categories');
+  return request<Category[]>('/categories', { revalidate: 300 });
 }
 
 export function getCategoryBySlug(slug: string) {
-  return request<Category>(`/categories/${slug}`);
+  return request<Category>(`/categories/${slug}`, { revalidate: 300 });
 }
 
 // ---------- Admin ----------

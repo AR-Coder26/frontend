@@ -4,11 +4,11 @@ import type { Brand } from '@/types';
 // ---------- Public ----------
 
 export function getBrands() {
-  return request<Brand[]>('/brands');
+  return request<Brand[]>('/brands', { revalidate: 300 });
 }
 
 export function getBrandBySlug(slug: string) {
-  return request<Brand>(`/brands/${slug}`);
+  return request<Brand>(`/brands/${slug}`, { revalidate: 300 });
 }
 
 // ---------- Admin ----------

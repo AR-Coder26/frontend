@@ -8,7 +8,10 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "");
 const useApiProxy = process.env.NEXT_PUBLIC_API_PROXY === "true";
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   images: {
+    // AVIF first, WebP fallback — smaller images, better LCP.
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       // {
       //   protocol: "https",
@@ -19,6 +22,17 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
       },
     ],
+  },
+  // Permanent (301) redirects.
+  //  - /brand/* pages were built around designer names the store has no authorisation to use.
+  //    Remove this rule if you later create brand pages for your OWN brand.
+  //  - Add one entry per renamed / merged product so old URLs keep their ranking, e.g.
+  //    { source: "/products/old-slug-1", destination: "/products/new-slug", permanent: true },
+  async redirects() {
+    return [
+      { source: "/brand/:slug", destination: "/products", permanent: true },
+      // { source: "/products/zara-shahjahan-luxury-embroidered-lawn-suit-1", destination: "/products/<new-slug>", permanent: true },
+    ];
   },
   async rewrites() {
     if (!useApiProxy) return [];

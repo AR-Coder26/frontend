@@ -13,13 +13,15 @@ export function renderInline(text: string): ReactNode[] {
   let match: RegExpExecArray | null;
 
   while ((match = pattern.exec(text)) !== null) {
+    const [fullMatch, label, href] = match;
+    if (fullMatch === undefined || label === undefined || href === undefined) continue;
     if (match.index > lastIndex) nodes.push(text.slice(lastIndex, match.index));
     nodes.push(
-      <Link key={`${match.index}-${match[2]}`} href={match[2]} className={LINK_CLASS}>
-        {match[1]}
+      <Link key={`${match.index}-${href}`} href={href} className={LINK_CLASS}>
+        {label}
       </Link>
     );
-    lastIndex = match.index + match[0].length;
+    lastIndex = match.index + fullMatch.length;
   }
   if (lastIndex < text.length) nodes.push(text.slice(lastIndex));
   return nodes;

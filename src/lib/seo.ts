@@ -117,8 +117,9 @@ export function formatPaymentMethods(settings: StoreSettingsPublic): string {
     settings.easyPaisa ? 'EasyPaisa' : null,
     settings.bankTransfer ? 'bank transfer' : null,
   ].filter((label): label is string => Boolean(label));
-  if (methods.length === 1) return methods[0];
-  return `${methods.slice(0, -1).join(', ')} or ${methods[methods.length - 1]}`;
+  const last = methods[methods.length - 1];
+  if (methods.length === 1 || last === undefined) return methods[0] ?? 'Cash on Delivery';
+  return `${methods.slice(0, -1).join(', ')} or ${last}`;
 }
 
 /** Replaces {TOKENS} in copy strings, leaving unknown tokens untouched. */

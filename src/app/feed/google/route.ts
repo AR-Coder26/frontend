@@ -90,6 +90,9 @@ function buildItem(product: Product): string {
     truncate(product.description, 4900) ||
     `${product.fabricType} ${product.pieceCount}-piece suit for women.`;
 
+  const categoryName = product.category?.name ?? 'Clothing';
+  const fabric = product.fabricType ?? 'Unstitched';
+
   const lines = [
     `<g:id>${xml(product._id)}</g:id>`,
     `<title>${xml(truncate(title, 150))}</title>`,
@@ -104,10 +107,10 @@ function buildItem(product: Product): string {
     `<g:brand>${xml(SITE_NAME)}</g:brand>`,
     `<g:identifier_exists>no</g:identifier_exists>`,
     `<g:google_product_category>${xml('Apparel & Accessories > Clothing > Outfit Sets')}</g:google_product_category>`,
-    `<g:product_type>${xml(`Women > ${product.category.name} >${product.fabricType}`)}</g:product_type>`,
+    `<g:product_type>${xml(`Women > ${categoryName} >${fabric}`)}</g:product_type>`,
     `<g:gender>female</g:gender>`,
     `<g:age_group>adult</g:age_group>`,
-    `<g:material>${xml(product.fabricType)}</g:material>`,
+    `<g:material>${xml(fabric)}</g:material>`,
     ...(cheapest.color ? [`<g:color>${xml(cheapest.color)}</g:color>`] : []),
   ];
 

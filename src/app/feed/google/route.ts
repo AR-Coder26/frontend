@@ -75,6 +75,9 @@ function buildItem(product: Product): string {
   );
   if (images.length === 0 || product.variants.length === 0) return '';
 
+  const mainImage = images[0];
+  if (!mainImage) return '';
+
   // The cheapest variant sets the listed price; if it has a higher "compare at" price,
   // that becomes the regular price and the variant price becomes the sale price.
   const cheapest = product.variants.reduce((best, variant) =>
@@ -92,7 +95,7 @@ function buildItem(product: Product): string {
     `<title>${xml(truncate(title, 150))}</title>`,
     `<description>${xml(description)}</description>`,
     `<link>${xml(absoluteUrl(`/products/${product.slug}`))}</link>`,
-    `<g:image_link>${xml(images[0])}</g:image_link>`,
+    `<g:image_link>${xml(mainImage)}</g:image_link>`,
     ...images.slice(1, 11).map((url) => `<g:additional_image_link>${xml(url)}</g:additional_image_link>`),
     `<g:availability>${product.isOutOfStock ? 'out_of_stock' : 'in_stock'}</g:availability>`,
     `<g:price>${money(onSale ? (cheapest.comparePrice as number) : cheapest.price)}</g:price>`,
@@ -101,7 +104,7 @@ function buildItem(product: Product): string {
     `<g:brand>${xml(SITE_NAME)}</g:brand>`,
     `<g:identifier_exists>no</g:identifier_exists>`,
     `<g:google_product_category>${xml('Apparel & Accessories > Clothing > Outfit Sets')}</g:google_product_category>`,
-    `<g:product_type>${xml(`Women > ${product.category.name} > ${product.fabricType}`)}</g:product_type>`,
+    `<g:product_type>${xml(`Women > ${product.category.name} >${product.fabricType}`)}</g:product_type>`,
     `<g:gender>female</g:gender>`,
     `<g:age_group>adult</g:age_group>`,
     `<g:material>${xml(product.fabricType)}</g:material>`,
